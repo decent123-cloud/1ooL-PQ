@@ -2,19 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100L Past Questions & Answers</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Practice all Questions | Scholar’s Circle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>100L Past Questions & Answers</h1>
-    </header>
-    <main>
-        <section id="questions">
-            <!-- Questions will go here -->
-        </section>
-    </main>
-    <script src="script.js"></script>
+        <h1>Practice all Questions</h1>
+        <header></header>
+            <p>
+                <em>100L Scholar’s Circle</em><br>
+                Select your course and practice!
+            </p>
+        </header>
+        <main>
+            <div id="auth-container">
+                <div id="login-form" style="max-width:350px;margin:30px auto;display:block;">
+                    <h2>Login</h2>
+                    <input type="text" id="login-username" placeholder="Username" style="width:100%;margin-bottom:10px;padding:8px;">
+                    <input type="password" id="login-password" placeholder="Password" style="width:100%;margin-bottom:10px;padding:8px;">
+                    <button id="login-btn" style="width:100%;padding:10px;background:#007bff;color:#fff;border:none;border-radius:5px;">Login</button>
+                    <p style="margin-top:10px;">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+                </div>
+                <div id="signup-form" style="max-width:350px;margin:30px auto;display:none;">
+                    <h2>Sign Up</h2>
+                    <input type="text" id="signup-username" placeholder="Username" style="width:100%;margin-bottom:10px;padding:8px;">
+                    <input type="password" id="signup-password" placeholder="Password" style="width:100%;margin-bottom:10px;padding:8px;">
+                    <button id="signup-btn" style="width:100%;padding:10px;background:#ff6a00;color:#fff;border:none;border-radius:5px;">Sign Up</button>
+                    <p style="margin-top:10px;">Already have an account? <a href="#" id="show-login">Login</a></p>
+                </div>
+                <div id="auth-message" style="max-width:350px;margin:10px auto;color:#d00;text-align:center;"></div>
+            </div>
+            <div id="main-content" style="display:none;">
+                <div class="tab-bar">
+                    <button class="tab-btn active" data-course="phy102">PHY 102</button>
+                    <button class="tab-btn" data-course="phy123">PHY 123 (2022/2023)</button>
+                    <button class="tab-btn" data-course="phy101">PHY 101</button>
+                </div>
+                <section id="questions"></section>
+                <button id="logout-btn" style="margin:30px auto 0 auto;display:block;padding:10px 30px;background:#ff0057;color:#fff;border:none;border-radius:5px;">Logout</button>
+            </div>
+        </main>
+        <footer>
+            <p>© 2025 Scholar’s Circle | Built for 100L Students only</p>
+        </footer>
+        <script src="script.js"></script>
 </body>
 </html>
