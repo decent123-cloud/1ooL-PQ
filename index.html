@@ -17,30 +17,34 @@
         </header>
         <main>
             <div id="auth-container">
-                <div id="login-form" style="max-width:350px;margin:30px auto;display:block;">
+                <div id="login-form">
                     <h2>Login</h2>
-                    <input type="text" id="login-username" placeholder="Username" style="width:100%;margin-bottom:10px;padding:8px;">
-                    <input type="password" id="login-password" placeholder="Password" style="width:100%;margin-bottom:10px;padding:8px;">
-                    <button id="login-btn" style="width:100%;padding:10px;background:#007bff;color:#fff;border:none;border-radius:5px;">Login</button>
-                    <p style="margin-top:10px;">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+                    <input type="text" id="login-username" placeholder="Username" class="auth-input">
+                    <input type="password" id="login-password" placeholder="Password" class="auth-input">
+                    <button id="login-btn" class="login-btn">Login</button>
+                    <p class="auth-link">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
                 </div>
-                <div id="signup-form" style="max-width:350px;margin:30px auto;display:none;">
+                <div id="signup-form">
                     <h2>Sign Up</h2>
-                    <input type="text" id="signup-username" placeholder="Username" style="width:100%;margin-bottom:10px;padding:8px;">
-                    <input type="password" id="signup-password" placeholder="Password" style="width:100%;margin-bottom:10px;padding:8px;">
-                    <button id="signup-btn" style="width:100%;padding:10px;background:#ff6a00;color:#fff;border:none;border-radius:5px;">Sign Up</button>
-                    <p style="margin-top:10px;">Already have an account? <a href="#" id="show-login">Login</a></p>
+                    <input type="text" id="signup-username" placeholder="Username" class="auth-input">
+                    <input type="password" id="signup-password" placeholder="Password" class="auth-input">
+                    <button id="signup-btn" class="signup-btn">Sign Up</button>
+                    <p class="auth-link">Already have an account? <a href="#" id="show-login">Login</a></p>
                 </div>
-                <div id="auth-message" style="max-width:350px;margin:10px auto;color:#d00;text-align:center;"></div>
+                <div id="auth-message"></div>
             </div>
-            <div id="main-content" style="display:none;">
+            <div id="main-content">
                 <div class="tab-bar">
-                    <button class="tab-btn active" data-course="phy102">PHY 102</button>
-                    <button class="tab-btn" data-course="phy123">PHY 123 (2022/2023)</button>
                     <button class="tab-btn" data-course="phy101">PHY 101</button>
+                    <button class="tab-btn active" data-course="phy102">PHY 102</button>
+                    <button class="tab-btn" data-course="phy123">PHY 123</button>
+                    <button class="tab-btn" data-course="phy124">PHY 124</button>
+                    <button class="tab-btn" data-course="cee101">CEE 101</button>
+                    <button class="tab-btn" data-course="sta122">STA 122</button>
+                    <button class="tab-btn" data-course="gst101">GST 101</button>
                 </div>
                 <section id="questions"></section>
-                <button id="logout-btn" style="margin:30px auto 0 auto;display:block;padding:10px 30px;background:#ff0057;color:#fff;border:none;border-radius:5px;">Logout</button>
+                <button id="logout-btn" class="logout-btn">Logout</button>
             </div>
         </main>
         <footer>
