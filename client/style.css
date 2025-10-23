@@ -1,0 +1,142 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #f4f8fb 0%, #e0e7ef 100%);
+  color: #222;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+header {
+  background: #b30000;
+  color: #fff;
+  text-align: center;
+  padding: 28px 10px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+#darkmode-toggle {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #fff3cd;
+  color: #b30000;
+  border: none;
+  border-radius: 18px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.instruction {
+  max-width: 900px;
+  margin: 18px auto 0;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+}
+.inline-btn {
+  margin-left: 14px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* main card */
+main {
+  max-width: 920px;
+  margin: 24px auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* level sections */
+.level {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  display: none; /* hidden until revealed */
+  transform-origin: top center;
+  transition: all 320ms ease;
+}
+.level.visible {
+  display: block;
+  animation: fadeInDown 340ms ease;
+}
+
+/* small level heading */
+.level h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+  color: #111;
+}
+
+/* tab styles (same as previous) */
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.tab-btn {
+  background: #eee;
+  color: #222;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: transform 150ms, background 150ms;
+}
+.tab-btn:hover { transform: translateY(-3px); }
+.tab-btn.active {
+  background: #007bff;
+  color: #fff;
+}
+
+/* questions area */
+#questions {
+  margin-top: 18px;
+  min-height: 120px;
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+#questions.visible { opacity: 1; }
+
+/* question card */
+.question {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+}
+.options { list-style: none; padding: 0; margin: 10px 0 0 0; }
+.option-btn { width:100%; padding:10px; margin:6px 0; border-radius:8px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+.option-btn.correct { background:#d4edda; border-color:#28a745; }
+.option-btn.incorrect { background:#f8d7da; border-color:#d00; }
+
+/* score and feedback */
+#score-bar { font-weight:700; color:#007bff; margin-bottom:10px; }
+.feedback { margin-top:8px; font-weight:600; }
+
+/* footer */
+footer { text-align:center; margin:24px 0; color:#555; }
+
+/* animations */
+@keyframes fadeInDown {
+  from { opacity:0; transform: translateY(-8px) scale(0.995); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* responsive */
+@media (max-width:700px){
+  .tab-btn { padding:10px 12px; min-width:90px; }
+  main { padding:12px; }
+}

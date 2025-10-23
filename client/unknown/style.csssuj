@@ -1,0 +1,3274 @@
+/* General styles */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f4f8fb;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #b30000;
+  color: #fff;
+  text-align: center;
+  padding: 24px 10px 18px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+main {
+  max-width: 700px;
+  margin: 30px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+footer {
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 18px 0;
+  font-size: 1em;
+  margin-top: 30px;
+  border-top: 4px solid #ff9800;
+}
+
+/* Auth styles */
+#auth-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+input.auth-input {
+  display: block;
+  width: 80%;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+button,
+.tab-btn,
+.option-btn,
+.show-answer,
+#logout-btn {
+  background: #b30000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  margin: 6px 0;
+  transition: background 0.2s;
+}
+
+button:hover,
+.tab-btn:hover,
+.option-btn:hover,
+.show-answer:hover,
+#logout-btn:hover {
+  background: #900000;
+}
+
+.auth-link {
+  margin-top: 10px;
+  font-size: 0.98em;
+}
+
+#auth-message {
+  margin-top: 12px;
+  font-weight: 600;
+  min-height: 24px;
+}
+
+/* Tabs */
+.tab-bar {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.tab-btn {
+  background: #eee;
+  color: #222;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  min-width: 110px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab-btn.active {
+  background: #007bff;
+  color: #fff;
+}
+
+/* Logout button */
+#logout-btn {
+  width: 100%;
+  margin-top: 24px;
+  background: #b30000;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1.1em;
+}
+
+/* Questions */
+.question {
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.options {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.option-btn {
+  margin: 4px 0;
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.2s, border 0.2s;
+}
+
+.option-btn.selected {
+  border: 2px solid #007bff;
+}
+
+.option-btn.correct {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+.option-btn.incorrect {
+  background: #f8d7da;
+  border-color: #d00;
+}
+
+.feedback {
+  margin-top: 8px;
+  font-weight: 600;
+  min-height: 22px;
+}
+
+.show-answer {
+  background: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  padding: 7px 16px;
+  font-size: 0.98em;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.answer {
+  margin-top: 8px;
+  font-size: 1em;
+  background: #e7f4e4;
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: #222;
+  display: none;
+}
+
+/* Score bar */
+#score-bar {
+  margin-bottom: 18px;
+  font-weight: 600;
+  color: #007bff;
+  font-size: 1.08em;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  main {
+    padding: 8px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .tab-bar {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tab-btn {
+    min-width: 80px;
+    padding: 10px 8px;
+    font-size: 1em;
+  }
+  #logout-btn {
+    padding: 10px 0;
+    font-size: 1em;
+  }
+}
+
+
+
+
+
+
+
+// === AUTH FRONTEND LOGIC ===
+const authContainer = document.getElementById('auth-container');
+const loginForm = document.getElementById('login-form');
+const signupForm = document.getElementById('signup-form');
+const authMessage = document.getElementById('auth-message');
+const mainContent = document.getElementById('main-content');
+const logoutBtn = document.getElementById('logout-btn');
+
+// Show login form
+function showLogin() {
+  loginForm.style.display = 'block';
+  signupForm.style.display = 'none';
+  authMessage.textContent = '';
+}
+
+// Show signup form
+function showSignup() {
+  loginForm.style.display = 'none';
+  signupForm.style.display = 'block';
+  authMessage.textContent = '';
+}
+
+// Switch between login/signup
+document.getElementById('show-signup').onclick = (e) => {
+  e.preventDefault();
+  showSignup();
+};
+document.getElementById('show-login').onclick = (e) => {
+  e.preventDefault();
+  showLogin();
+};
+
+// Store token in localStorage
+function setAuth(token) {
+  localStorage.setItem('authToken', token);
+}
+function getAuth() {
+  return localStorage.getItem('authToken');
+}
+function clearAuth() {
+  localStorage.removeItem('authToken');
+}
+
+// Show/hide main content
+function showMainContent() {
+  authContainer.style.display = 'none';
+  mainContent.style.display = 'block';
+}
+function showAuthForms() {
+  authContainer.style.display = 'block';
+  mainContent.style.display = 'none';
+}
+
+// Signup
+if (document.getElementById('signup-btn')) {
+  document.getElementById('signup-btn').onclick = async function() {
+    const username = document.getElementById('signup-username').value.trim();
+    const password = document.getElementById('signup-password').value.trim();
+    if (!username || !password) {
+      authMessage.textContent = 'Please enter username and password.';
+      authMessage.style.color = '#d00';
+      return;
+    }
+    authMessage.textContent = 'Signing up...';
+    authMessage.style.color = '#222';
+    try {
+      const res = await fetch('http://localhost:3001/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        authMessage.style.color = '#28a745';
+        authMessage.textContent = 'Signup successful! You can now login.';
+        showLogin();
+      } else {
+        authMessage.style.color = '#d00';
+        authMessage.textContent = data.error || 'Signup failed.';
+      }
+    } catch (err) {
+      authMessage.style.color = '#d00';
+      authMessage.textContent = 'Network error.';
+    }
+  };
+}
+
+// Login
+if (document.getElementById('login-btn')) {
+  document.getElementById('login-btn').onclick = async function() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    if (!username || !password) {
+      authMessage.textContent = 'Please enter username and password.';
+      authMessage.style.color = '#d00';
+      return;
+    }
+    authMessage.textContent = 'Logging in...';
+    authMessage.style.color = '#222';
+    try {
+      const res = await fetch('http://localhost:3001/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success && data.token) {
+        setAuth(data.token);
+        showMainContent();
+        authMessage.textContent = '';
+        renderQuestions('phy101'); // Show default course after login
+      } else {
+        authMessage.style.color = '#d00';
+        authMessage.textContent = data.error || 'Login failed.';
+      }
+    } catch (err) {
+      authMessage.style.color = '#d00';
+      authMessage.textContent = 'Network error.';
+    }
+  };
+}
+
+// Logout
+if (logoutBtn) {
+  logoutBtn.onclick = function() {
+    clearAuth();
+    showAuthForms();
+    showLogin();
+    authMessage.textContent = 'Logged out successfully!';
+    authMessage.style.color = '#28a745';
+  };
+}
+
+// On page load, check auth
+window.addEventListener('DOMContentLoaded', () => {
+  if (getAuth()) {
+    showMainContent();
+    renderQuestions('phy101'); // Show default course if already logged in
+  } else {
+    showAuthForms();
+    showLogin();
+  }
+});
+
+// === QUESTION RENDERING LOGIC ===
+let currentScore = 0;
+let totalQuestions = 0;
+let answeredCorrect = {};
+
+function renderQuestions(courseKey, searchTerm = "") {
+  const questions = courses[courseKey].filter(q => {
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+    return q.question.toLowerCase().includes(term) || q.options.some(opt => opt.toLowerCase().includes(term));
+  });
+  const questionsSection = document.getElementById('questions');
+  questionsSection.innerHTML = "";
+
+  // Score bar
+  const scoreBar = document.createElement('div');
+  scoreBar.id = 'score-bar';
+  scoreBar.style = 'margin-bottom: 18px; font-weight: 600; color: #007bff; font-size: 1.08em;';
+  scoreBar.textContent = `Score: ${currentScore} / ${totalQuestions}`;
+  questionsSection.appendChild(scoreBar);
+
+  // Search bar
+  const searchBar = document.createElement('input');
+  searchBar.type = 'text';
+  searchBar.placeholder = 'Search questions...';
+  searchBar.style = 'width: 100%; max-width: 350px; margin-bottom: 18px; padding: 8px; border-radius: 5px; border: 1px solid #007bff; font-size: 1em;';
+  searchBar.value = searchTerm;
+  questionsSection.appendChild(searchBar);
+
+  searchBar.addEventListener('input', function() {
+    renderQuestions(courseKey, searchBar.value);
+  });
+
+  totalQuestions = courses[courseKey].length;
+  currentScore = 0;
+  answeredCorrect[courseKey] = answeredCorrect[courseKey] || Array(totalQuestions).fill(false);
+
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question';
+
+    div.innerHTML = `
+      <strong>Q${q.number}:</strong> ${q.question}<br>
+      <ul class="options">
+        ${q.options.map(option => `
+          <li>
+            <button class="option-btn" data-option="${option}">
+              ${option}
+            </button>
+          </li>
+        `).join('')}
+      </ul>
+      <div class="feedback"></div>
+      <button class="show-answer">Show Correct Answer</button>
+      <div class="answer" style="display:none; margin-top: 8px;">
+        <strong>Answer:</strong> <span style="color: green;">${q.answer}</span>
+      </div>
+    `;
+
+    questionsSection.appendChild(div);
+
+    // Option selection & feedback
+    const optionBtns = div.querySelectorAll('.option-btn');
+    const feedbackDiv = div.querySelector('.feedback');
+    const showAnswerBtn = div.querySelector('.show-answer');
+    const answerDiv = div.querySelector('.answer');
+
+    optionBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        optionBtns.forEach(b => b.classList.remove('selected', 'correct', 'incorrect'));
+        feedbackDiv.textContent = '';
+        btn.classList.add('selected');
+        if (btn.textContent.trim() === q.answer.trim()) {
+          btn.classList.add('correct');
+          feedbackDiv.textContent = "Correct! ✔️";
+          feedbackDiv.style.color = "#28a745";
+          if (!answeredCorrect[courseKey][q.number-1]) {
+            answeredCorrect[courseKey][q.number-1] = true;
+            currentScore++;
+            scoreBar.textContent = `Score: ${currentScore} / ${totalQuestions}`;
+          }
+        } else {
+          btn.classList.add('incorrect');
+          feedbackDiv.textContent = `Incorrect. Try again!`;
+          feedbackDiv.style.color = "#d00";
+        }
+      });
+    });
+
+    // Show/hide answer
+    showAnswerBtn.addEventListener('click', function() {
+      answerDiv.style.display = answerDiv.style.display === 'none' ? 'block' : 'none';
+      showAnswerBtn.textContent = answerDiv.style.display === 'block' ? 'Hide Correct Answer' : 'Show Correct Answer';
+    });
+  });
+}
+
+// Tab switching logic
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // Reset score and answeredCorrect for new course
+    currentScore = 0;
+    totalQuestions = courses[btn.dataset.course].length;
+    answeredCorrect[btn.dataset.course] = Array(totalQuestions).fill(false);
+    renderQuestions(btn.dataset.course);
+  });
+});
+
+// === SAMPLE COURSES OBJECT ===
+// Add your full questions here!
+ const courses = { 
+  phy102: [
+    {
+      number: 1,
+      question: "Who demonstrated that thunderclouds are charged with electricity?",
+      options: ["Isaac Newton", "Michael Faraday", "Benjamin Franklin", "James Clerk Maxwell"],
+      answer: "Benjamin Franklin"
+    },
+    {
+      number: 2,
+      question: "What is the amount of electric current during the discharge that causes lightning?",
+      options: ["2KA", "20KA", "200KA", "2000KA"],
+      answer: "20KA"
+    },
+    {
+      number: 3,
+      question: "What is the temperature rise in a fraction of a second during a lightning discharge?",
+      options: ["1500°C", "15000°C", "150000°C", "1500000°C"],
+      answer: "150000°C"
+    },
+    {
+      number: 4,
+      question: "What is the width of the area where lightning develops?",
+      options: ["2 cm", "20 cm", "200 cm", "2 m"],
+      answer: "20 cm"
+    },
+    {
+      number: 5,
+      question: "What causes the sound that we hear as thunder?",
+      options: ["The movement of air molecules due to heat", "The friction between clouds", "The splitting of clouds", "The falling of raindrops"],
+      answer: "The movement of air molecules due to heat"
+    },
+        {
+      number: 6,
+      question: "What is the study of static electric charges called?",
+      options: ["Electrodynamics", "Magnetostatics", "Electrostatics", "Thermodynamics"],
+      answer: "Electrostatics"
+    },
+    {
+      number: 7,
+      question: "Which of the following is NOT a practical application of electrostatics?",
+      options: ["Electrical prospecting for minerals", "Design of cathode ray tubes for television", "Electrostatic loudspeakers and microphones", "Design of internal combustion engines"],
+      answer: "Design of internal combustion engines"
+    },
+    {
+      number: 8,
+      question: "What is the force that holds electrons to nuclei to form atoms?",
+      options: ["Gravitational force", "Magnetic force", "Electrostatic force", "Nuclear force"],
+      answer: "Nuclear force"
+    },
+    {
+      number: 9,
+      question: "What phenomenon causes the roaring sound of clouds?",
+      options: ["The splitting of clouds", "The reflection of thunder by clouds, hills, or obstacles", "The collision of air molecules", "The cooling of the atmosphere"],
+      answer: "The reflection of thunder by clouds, hills, or obstacles"
+    },
+    {
+      number: 10,
+      question: "Which of the following devices utilizes electrostatics in its operation?",
+      options: ["Internal combustion engine", "Cathode ray tube", "Hydraulic pump", "Steam engine"],
+      answer: "Cathode ray tube"
+    },
+  {number: 11,
+     question: "Which part of the atom is positively charged?", 
+    options: ["Electron", "Neutron", "Proton", "Nucleus"],
+     answer: "Proton"},
+
+  {number: 12,
+     question: "Who discovered that some substances exhibit electrical charge when rubbed?", 
+     options: ["Isaac Newton", "William Gilbert", "Charles Du Fay", "Michael Faraday"], 
+     answer: "William Gilbert"},
+  {number: 13,
+     question: "What type of charge does a glass rod acquire when rubbed with silk?",
+     options: ["Positive", "Negative", "Neutral", "None of the above"], 
+     answer: "Positive"},
+  {number: 14,
+     question: "What happens when two ebonite rods rubbed with fur are brought close to each other?",
+     options: ["They attract each other", "They repel each other", "They become neutral", "They have no effect on each other"],
+     answer: "They repel each other"},
+  {number: 15,
+     question: "Which type of charge is associated with the electron?",
+     options: ["Positive", "Negative", "Neutral", "None of the above"],
+     answer: "Negative"},
+  {number: 16,
+     question: "What force holds the protons and neutrons together in the nucleus?",
+     options: ["Gravitational force", "Magnetic force", "Nuclear force", "Electrical force"],
+     answer: "Nuclear force"},
+  {number: 17,
+     question: "What are free electrons?",
+     options: ["Electrons that are tightly bound to the nucleus", "Electrons that can move away from the atom", "Electrons that carry positive charge", "Electrons that are neutral"],
+     answer: "Electrons that can move away from the atom"},
+  {number: 18,
+     question: "What happens to the wool when it is rubbed with a plastic ruler?",
+     options: ["It gains electrons and becomes negatively charged", "It loses electrons and becomes positively charged", "It remains electrically neutral", "It repels the plastic ruler"],
+     answer: "It loses electrons and becomes positively charged"},
+  {number: 19,
+     question: "What happens when two materials are rubbed together?",
+     options: ["Electrons get transferred from one material to the other", "Protons get transferred from one material to the other", "Neutrons get transferred from one material to the other", "No charge transfer occurs"],
+     answer: "Electrons get transferred from one material to the other"},
+  {number: 20,
+     question: "What type of charge does an object have when it has an equal amount of both types of charge?",
+     options: ["Positive", "Negative", "Neutral", "Charged"],
+     answer: "Neutral"},
+  {number: 21,
+     question: "What does the principle of superposition of forces state?",
+     options: ["The force between two charges depends on their masses.", "The total force on a charge is the vector sum of individual forces exerted by other charges.", "The total force on a charge is the scalar sum of individual forces exerted by other charges.", "The force between two charges is independent of their distance."],
+     answer: "The total force on a charge is the vector sum of individual forces exerted by other charges."},
+  {number: 22, 
+    question: "The force on a charge due to multiple other charges is calculated by:", 
+    options: ["Adding the forces algebraically.", "Finding the scalar sum of all forces.", "Applying Coulomb’s law to each pair and summing the vectors.", "None of the above."],
+     answer: "Applying Coulomb’s law to each pair and summing the vectors."},
+  {number: 23,
+     question: "What does an electric field represent?",
+     options: ["The region of space where a magnetic force can be felt.", "The region of space where a charged particle experiences a force.", "The direction of motion of a charged particle.", "The energy possessed by a charged particle."], 
+     answer: "The region of space where a charged particle experiences a force."},
+  {number: 24,
+    question: "When another charged object enters an electric field, what happens?",
+    options: ["It gains energy.", "It experiences an electric force.", "It loses charge.", "It remains unaffected."],
+    answer: "It experiences an electric force."},
+  {number: 25,
+    question: "The direction of the electric field € at a point is:",
+    options: ["Opposite to the direction of the electric force.", "Perpendicular to the direction of the electric force.", "Along the direction of the electric force.", "Independent of the direction of the electric force."],
+    answer: "Along the direction of the electric force."},
+  {number: 26,
+    question: "In SI units, the electric field intensity is measured in:",
+    options: ["Coulombs per newton (C/N).", "Newton per coulomb (N/C).", "Meter per Volt (M/V).", "Joules per coulomb (J/C)."],
+    answer: "Newton per coulomb (N/C)."},
+  {number: 27,
+    question: "According to the text, the force between two charges ( q1 ) and ( q2 ) separated by distance ( r ) is given by:",
+    options: ["F = (1 / 4πepsilon) * {|q1q2|}/{r^2}", "F = ( 1/ {4πepsilon} * {q1 + q2}{r}", "F = ( 1 / {4πepsilon} * {q1 – q2}/{r^2}", "F = k{q1 q2} + {r^2}"],
+    answer: "F = (1 / 4πepsilon) * {|q1q2|}/{r^2}"},
+  {number: 28,
+    question: "What is the SI unit of electric field intensity?",
+    options: ["Volt per meter (V/m)", "Newton per coulomb (N/C)", "Coulomb per meter (C/m)", "Joule per coulomb (J/C)"],
+    answer: "Newton per coulomb (N/C)"},
+  {number: 29,
+    question: "Electric field intensity € is defined as:",
+    options: ["The electric force experienced by a charge.", "The electric force per unit charge.", "The potential energy per unit charge.", "The electric potential difference."],
+    answer: "The electric force per unit charge."},
+  {number: 30,
+    question: "If a charge (q2) is placed near another charge ( q1), the charges:",
+    options: ["Always attract each other.", "Always repel each other.", "Interact through their electric fields.", "Do not interact."],
+    answer: "Interact through their electric fields."},
+  {number: 31,
+    question: "What is electric flux a measure of?",
+    options: ["The amount of charge in a region", "The strength of a magnetic field", "The number of electric field lines passing through a point or area", "The distance between electric field lines"],
+    answer: "The number of electric field lines passing through a point or area"},
+  {number: 32,
+    question: "What happens to the electric flux through the surface of a box if a positive charge is placed inside it?",
+    options: ["There is an inward flux of electric field.", "There is an outward flux of electric field.", "There is no electric flux.", "The flux becomes zero."],
+    answer: "There is an outward flux of electric field."},
+  {number: 33,
+    question: "If a box contains both a positive and a negative charge, what is the net electric flux through the surface of the box?",
+    options: ["Outward flux", "Inward flux", "No net flux", "The flux is infinite"],
+    answer: "No net flux"},
+  {number: 34,
+    question: "If there is no charge inside an imaginary box, what is true about the electric flux through the box?",
+    options: ["There is an inward flux.", "There is an outward flux.", "There is no electric flux.", "The flux is constant."],
+    answer: "There is no electric flux."},
+  {number: 35,
+    question: "The electric flux, ΦE, is defined as the product of which two quantities?",
+    options: ["Electric field, €, and the charge, (Q)", "Electric field, €, and the surface area, (A), perpendicular to the field", "Surface area, (A), and the distance between charges", "Electric potential, (V), and the surface area, (A)"],
+    answer: "Electric field, €, and the surface area, (A), perpendicular to the field"},
+  {number: 36,
+    question: "Which of the following describes the electric flux through a surface when a negative charge is inside an imaginary box?",
+    options: ["Outward flux", "Inward flux", "No flux", "Perpendicular flux"],
+    answer: "Inward flux"},
+  {number: 37,
+    question: "When the plane surface is tilted with respect to the electric field, what is used to calculate the electric flux?",
+    options: ["The area parallel to the electric field", "The area perpendicular to the electric field", "The total surface area of the box", "The distance from the charge to the surface"],
+    answer: "The area perpendicular to the electric field"},
+  {number: 38,
+    question: "The term “flux” in the context of electric fields originally comes from a Latin word meaning what?",
+    options: ["Flow", "Charge", "Field", "Area"],
+    answer: "Flow"},
+  {number: 39,
+    question: "What can be said about the number of electric field lines per unit area?",
+    options: ["It is inversely proportional to the electric field strength.", "It is directly proportional to the electric field strength.", "It remains constant regardless of the electric field strength.", "It is proportional to the distance from the charge."],
+    answer: "It is directly proportional to the electric field strength."},
+  {number: 40,
+    question: "If the electric flux through a surface is zero, what can we infer about the charges inside the surface?",
+    options: ["Only positive charges are present.", "Only negative charges are present.", "No charges are present, or the net charge is zero.", "There are equal numbers of positive and negative charges."],
+    answer: "No charges are present, or the net charge is zero."},
+  {number: 41,
+    question: "If the number of point charge is increases, the magnitude of the flux will also;",
+    options: ["Increases", "Decreases", "Remain the same", "Increases then decreases"],
+    answer: "Increases"},
+  {number: 42,
+    question: "When electric field lines are parallel and equally spaced, the field is _____",
+    options: ["Strong", "weak", "Uniform", "Attract"],
+    answer: "Uniform"},
+  {number: 43,
+    question: "What is the nature of electric field lines around a negative charge?",
+    options: ["They start from the charge.", "They terminate on the charge.", "They are circular.", "They are parallel to the charge."],
+    answer: "They terminate on the charge."},
+  {number: 44,
+    question: "The flux is depending on the number of _____",
+    options: ["Enclosed charge", "Enclosed surface", "Electron transferred", "Electric charge"],
+    answer: "Enclosed charge"},
+  {number: 45,
+    question: "What is electric flux a measure of?",
+    options: ["The amount of charge in a region", "The strength of a magnetic field", "The number of electric field lines passing through a point or area", "The distance between electric field lines"],
+    answer: "The number of electric field lines passing through a point or area"},
+  {number: 46,
+    question: "What happens to the electric flux through the surface of a box if a positive charge is placed inside it?",
+    options: ["There is an inward flux of electric field.", "There is an outward flux of electric field.", "There is no electric flux.", "The flux becomes zero."],
+    answer: "There is an outward flux of electric field."},
+  {number: 47,
+    question: "If a box contains both a positive and a negative charge, what is the net electric flux through the surface of the box?",
+    options: ["Outward flux", "Inward flux", "No net flux", "The flux is infinite"],
+    answer: "No net flux"},
+  {number: 48,
+    question: "If there is no charge inside an imaginary box, what is true about the electric flux through the box?",
+    options: ["There is an inward flux.", "There is an outward flux.", "There is no electric flux.", "The flux is constant."],
+    answer: "There is no electric flux."},
+  {number: 49,
+    question: "The electric flux, ΦE, is defined as the product of which two quantities?",
+    options: ["Electric field, €, and the charge, (Q)", "Electric field, €, and the surface area, (A), perpendicular to the field", "Surface area, (A), and the distance between charges", "Electric potential, (V), and the surface area, (A)"],
+    answer: "Electric field, €, and the surface area, (A), perpendicular to the field"},
+  {number: 50,
+    question: "Which of the following describes the electric flux through a surface when a negative charge is inside an imaginary box?",
+    options: ["Outward flux", "Inward flux", "No flux", "Perpendicular flux"],
+    answer: "Inward flux"},
+  {number: 51,
+    question: "Gauss’s law states that the total electric flux through any closed surface is proportional to:",
+    options: ["The surface area of the closed surface", "The total (net) electric charge inside the surface", "The distance from the charge to the surface", "The magnitude of the electric field outside the surface"],
+    answer: "The total (net) electric charge inside the surface"},
+  {number: 52,
+    question: "Which of the following can Gauss’s law help us understand?",
+    options: ["The behavior of magnetic fields in a vacuum", "How electric charge distributes itself over conducting bodies", "The flow of current through a resistor", "The propagation of light waves through a medium"],
+    answer: "How electric charge distributes itself over conducting bodies"},
+  {number: 53,
+    question: "The magnitude of the electric field E at every point on the surface of a sphere with a positive point charge at the center is determined using:",
+    options: ["Coulomb’s law", "Faraday’s law", "Gauss’s law", "Ampère’s law"],
+    answer: "Gauss’s law"},
+  {number: 54,
+    question: "A Gaussian surface is:",
+    options: ["An open surface used to measure magnetic flux", "A closed surface used to calculate electric flux", "A flat surface used in optics", "A curved surface in wave theory"],
+    answer: "A closed surface used to calculate electric flux"},
+  {number: 55,
+    question: "When a charged body in an electric field moves to the position where its potential energy is smaller, this is analogous to:",
+    options: ["A body moving upwards in a gravitational field", "A body moving to the position where its gravitational potential energy is maximum", "A body moving to the position where its gravitational potential energy is zero", "A body rotating in a circular"],
+    answer: "A body moving to the position where its gravitational potential energy is maximum"},
+  {number: 56,
+    question: "Gauss’s law simplifies problems that have:",
+    options: ["No symmetry", "Low degree of symmetry", "A high degree of symmetry", "No relation to symmetry"],
+    answer: "A high degree of symmetry"},
+  {number: 57,
+    question: "The electric flux through a closed surface depends on:",
+    options: ["The net electric charge inside the surface", "The shape of the surface", "The temperature of the surface", "The material of the surface"],
+    answer: "The net electric charge inside the surface"},
+  {number: 58,
+    question: "The electric field inside a conductor in electrostatic equilibrium is:",
+    options: ["Zero", "Uniform", "Maximum", "Constant and non-zero"],
+    answer: "Zero"},
+  {number: 59,
+    question: "If the radius of a spherical Gaussian surface is increased, the electric flux through the surface due to a point charge at the center:",
+    options: ["Increases", "Decreases", "Remains the same", "Depends on the material of the sphere"],
+    answer: "Remains the same"},
+  {number: 60,
+    question: "The potential energy of a charged body in an electric field will tend to:",
+    options: ["Increase as the body moves to a position of lower potential", "Decrease as the body moves to a position of lower potential", "Remain constant as the body moves within the field", "Be independent of the body’s position in the field"],
+    answer: "Decrease as the body moves to a position of lower potential"},
+  {number: 61,
+    question: "Which law is logically equivalent to Gauss’s law but is generally used for calculating the electric field due to point charges?",
+    options: ["Coulomb’s law", "Ampère’s law", "Faraday’s law", "Ohm’s law"],
+    answer: "Coulomb’s law"},
+  {number: 62,
+    question: "In an electric field, the potential energy of a charged particle is most closely related to:",
+    options: ["The mass of the particle", "The charge of the particle", "The velocity of the particle", "The acceleration of the particle"],
+    answer: "The charge of the particle"},
+  {number: 63,
+    question: "When a body is raised above the Earth’s surface, it acquires potential energy. Similarly, a charged body in an electric field acquires:",
+    options: ["Kinetic energy", "Electric potential energy", "Magnetic potential energy", "Thermal energy"],
+    answer: "Electric potential energy"},
+  {number: 64,
+    question: "In the analogy between gravitational potential energy and electric potential energy, the position of the charged particle in the electric field is comparable to:",
+    options: ["The mass of the object", "The speed of the object", "The height of the object above the Earth’s surface", "The temperature of the object"],
+    answer: "The height of the object above the Earth’s surface"},
+  {number: 65,
+    question: "In which direction does a positive charge move in an electric field?",
+    options: ["Against the direction of the electric field", "In the direction of the electric field", "Perpendicular to the electric field", "Randomly"],
+    answer: "In the direction of the electric field"},
+  {number: 66,
+    question: "What happens to the potential energy of a positive charge as it moves away from a positively charged plate?",
+    options: ["It increases", "It decrease", "It remains the same", "It becomes zero"],
+    answer: "It increases"},
+  {number: 67,
+    question: "How is the electric potential at a point in a field defined?",
+    options: ["Force per unit charge at that point", "Work done per unit charge moving from infinity to that point", "Energy per unit charge at that point", "Distance per unit charge from the sources"],
+    answer: "Work done per unit charge moving from infinity to that point"},
+  {number: 68,
+    question: "What is the significance of the choice of the zero of potential?",
+    options: ["It must always be at infinity", "It is purely arbitrary", "It must always be at the origin of the field", "It is fixed for all electric fields"],
+    answer: "It is purely arbitrary"},
+  {number: 69,
+    question: "In atomic physics, where distances of 10^{-10} m are involved, how far might “infinity” be considered?",
+    options: ["A few centimeters away", "A few kilometers away", "Only a small distance away from the charge responsible for the field", "A few meters away"],
+    answer: "Only a small distance away from the charge responsible for the field"},
+  {number: 70,
+    question: "The potential energy (U) associated with a test charge (Q) in an electric field can be described on what basis?",
+    options: ["Per unit volume", "Per unit charge", "Per unit force", "Per unit distance"],
+    answer: "Per unit charge"},
+  {number: 71,
+    question: "What is the electric potential (V) at a point in an electric field defined as?",
+    options: ["Force per unit charge at that point", "Work done per unit charge moving from infinity to that point", "Potential energy per unit charge associated with a test charge at that point", "Distance per unit charge from the source"],
+    answer: "Potential energy per unit charge associated with a test charge at that point"},
+  {number: 72,
+    question: "The SI unit of electric potential is the volt (V). One volt is equivalent to:",
+    options: ["1 joule per coulomb (1 J/C)", "1 newton per coulomb (1 N/C)", "1 coulomb per joule (1 C/J)", "1 watt per coulomb (1 W/C)"],
+    answer: "1 joule per coulomb (1 J/C)"},
+  {number: 73,
+    question: "What is the advantage of calculating the electric potential before determining the electric field?",
+    options: ["It makes field calculations unnecessary", "It simplifies the calculation of electric fields", "It is a more accurate method", "It is a required step in all electric field calculations"],
+    answer: "It simplifies the calculation of electric fields"},
+  {number: 74,
+    question: "If the electrostatic force between two equally charged bodies separated by a distance of 0.5 m is 36 x 10 N, what is the charge on each body?",
+    options: ["2 C", "1 C", "3 C", "4 C"],
+    answer: "1 C"},
+  {number: 75,
+    question: "The region where a charged body experiences an electric force is called ________",
+    options: ["Force field", "Magnetic field", "Gravitational field", "Electric field"],
+    answer: "Electric field"},
+  {number: 76,
+    question: "Electric field is a _____________",
+    options: ["Vector field", "Scalar field", "None of the above", "All of the above"],
+    answer: "Vector field"},
+  {number: 77,
+    question: "Which of the following statements is correct?",
+    options: ["The field about an isolated positive charge is radially inward while the field about a negative charge is radially outward", "The field about an isolated positive charge and isolated negative charge is both radially inward", "The field about an isolated positive charge and isolated negative charge is both radially outward", "The field about an isolated positive charge is radially outward while the field about a negative charge is radially inward"],
+    answer: "The field about an isolated positive charge is radially outward while the field about a negative charge is radially inward"},
+  {number: 78,
+    question: "What is the magnitude of the electric field at a field point 2.0 m from a point charge q = 4.0 nC?",
+    options: ["18.0 N/C", "9.0 N/C", "36.0 N/C", "6.0 N/C"],
+    answer: "9.0 N/C"},
+  {number: 79,
+    question: "The total electric field at a point P is the vector sum of the fields at P due to each point charge in the charge distribution. This is the principle of:",
+    options: ["Superposition of electric field", "Norton’s theory", "Coulomb’s rule", "Linear charge density"],
+    answer: "Superposition of electric field"},
+  {number: 80,
+    question: "The imaginary line or curve drawn through a region of space so that its tangent at any point is in the direction of the electric field vector at the point, is called __________",
+    options: ["Vector line", "Electrostatic line", "Electric field line", "Latitude"],
+    answer: "Electric field line"},
+  {number: 81,
+    question: "Calculate the electric field intensity at a point 15 cm from a charge of 10 μC",
+    options: ["4 x 10^6 N/C", "4 x 10^-6 N/C", "6 x 10^-6 N/C", "6 x 10^6 N/C"],
+    answer: "4 x 10^6 N/C"},
+  {number: 82,
+    question: "Electrostatic forces are governed by a simple relationship known as",
+    options: ["Ohm’s law", "Newton’s law", "Coulomb’s law", "Faraday’s law"],
+    answer: "Coulomb’s law"},
+  {number: 83,
+    question: "Electric charges at rest is referred to as",
+    options: ["electric current", "electrostatic", "electric field", "Rest charge"],
+    answer: "electrostatic"},
+  {number: 84,
+    question: "Which of the following statements is correct?",
+    options: ["Two negative charges or two positive charges repel each other", "Two negative charges or two positive charges attract each other", "A positive charge and a negative charge repel each other", "A positive charge attracts another positive charge but repel a negative charge"],
+    answer: "Two negative charges or two positive charges attract each other"},
+  {number: 85,
+    question: "Which of the following cannot be found in the nucleus of an atom?",
+    options: ["Proton", "electron", "neutron", "none of the above"],
+    answer: "electron"},
+  {number: 86,
+    question: "A neutral atom has as many electrons as it does protons",
+    options: ["True", "False", "Can’t say"],
+    answer: "True"},
+  {number: 87,
+    question: "When an atom loses an electron, it becomes _______________",
+    options: ["Positively charged", "Negatively charged", "Neutral atom", "An electron"],
+    answer: "Positively charged"},
+  {number: 88,
+    question: "The principle of conservation of charges state that",
+    options: ["The force of attraction between two charges is directly proportional to the square of their distance apart", "The force of repulsion between two charges is inversely proportional to the square of their distance apart", "The magnitude of charge of the electron is a natural unit of electric field intensity", "The algebraic sum of all the electric charges in any closed system is constant"],
+    answer: "The algebraic sum of all the electric charges in any closed system is constant"},
+  {number: 89,
+    question: "When the distance r between two charged bodies doubles, the force",
+    options: ["Increases to one-quarter of its initial value", "Decreases to one-quarter of its initial value", "Increases to one-half of its initial value", "Decreases to one-half of its initial value"],
+    answer: "Decreases to one-quarter of its initial value"},
+  {number: 90, 
+    question: "Coulomb’s law state that", 
+    options: ["The magnitude of the electric force between two point charges is directly proportional to the sum of the charges and inversely proportional to the square of the distance between them", "The magnitude of the electric force between two point charges is directly proportional to the product of the charges and inversely proportional to the distance between them", "The magnitude of the electric force between two point charges is directly proportional to the sum of the charges and inversely proportional to the distance between them", "The magnitude of the electric force between two point charges is directly proportional to the product of the charges and inversely proportional to the square of the distance between them"],
+     answer: "The magnitude of the electric force between two point charges is directly proportional to the product of the charges and inversely proportional to the square of the distance between them"},
+  {number: 91, 
+    question: "The electrostatic force between two charges is 120 N. if the distance between the charges is doubled, what will be the value of the force?", 
+    options: ["10 N", "25 N", "40 N", "30 N"], 
+    answer: "30 N"},
+  {number: 92, 
+    question: "How many electrons must be placed on each of two small spheres placed 3 cm apart if the force of repulsion between them is to be 10^-19 N?", 
+    options: ["526", "625", "225", "525"], 
+    answer: "625"},
+  {number: 93,
+    question: "The magnitude of the torque depends on the angle Փ between the electric dipole moment and", 
+    options: ["Electric field", "Nuclear field", "Magnetic field", "Electric current"], 
+    answer: "Electric field"},
+  {number: 94,
+     question: "The potential energy U for a dipole in an electric field is given by",
+      options: ["U = - P ᵒ E", "U = - P ᵒ q", "U = - P ᵒ Փ", "U = - qE"], 
+     answer: "U = - P ᵒ E"},
+  {number: 95,
+     question: "A charge of 1.0 x 10^-5 C experiences a force of 4 N at a certain point in space. What is the electric field intensity?", 
+     options: ["4.0 x 10^5 N/C", "4.0 x 10^-5 N/C", "6.0 x 10^5 N/C", "6.0 x 10^-5 N/C"], 
+     answer: "4.0 x 10^5 N/C"},
+  {number: 96,
+     question: "The gain or loss of electrons in an atom is called",
+     options: ["Reduction", "Electronegativity", "Protonation", "Ionization"],
+     
+     answer: "Ionization"},
+  {number: 97,
+     question: "Calculate the electric field intensity in vacuum at a distance of 10 cm from a charge of 5 x 10^-4 C",
+     options: ["4.5 x 10^8 N/C", "4.5 x 10^7 N/C", "4.5 x 10^6 N/C", "4.5 x 10^5 N/C"],
+     answer: "4.5 x 10^8 N/C"},
+  {number: 98,
+     question: "Rubber band and nylon are examples of",
+     options: ["Insulators", "Conductors", "Semiconductors", "Metals"],
+     answer: "Insulators"},
+  {number: 99,
+     question: "The act of charging a metal ball using a copper wire and an electrically charged plastic rod in which the plastic rod can give the other body a Charge of opposite sign without losing any of its own charge is known as charging by",
+     options: ["Conduction", "Friction", "Induction", "Distortion"],
+     answer: "Induction"},
+  {number: 100,
+     question: "The deficiency or excessiveness of an electron in an atom is known as",
+     options: ["Coulomb", "Current", "Electrostatic", "Electric charge"],
+     answer: "Electric charge"},
+  {number: 101,
+     question: "If 10 electrons are placed on an uncharged metallic sphere, how much electric charge is on the sphere?",
+     options: ["1.6 C", "1.5 C", "1.7 C", "6.0 C"],
+     answer: "1.6 C"},
+  {number: 102,
+     question: "Two-point charges q1 = +25 nC and q2 = -75 nC are separated by a distance r = 3.0 cm. find the magnitude of the force that q1 exert on q2.",
+     options: ["0.0019 N", "0.19 N", "0.0019 N", "0.019 N"],
+     answer: "0.019 N"},
+  {number: 103,
+     question: "The simplest atom is the hydrogen atom and it contains",
+     options: ["1 proton in its nucleus balanced by 2 electrons orbiting the nucleus", "1 proton in it’s nucleus balanced by 1 electron", "2 proton in it’s nucleus balanced by 1 electron", "2 proton in it’s nucleus balanced by 2 electron"],
+     answer: "1 proton in it’s nucleus balanced by 1 electron"} // ... all your 103 questions and answers here
+    // ... add ALL PHY 102 questions here
+  ],
+  phy123: [
+    {
+      number: 1,
+      question: "The magnitude of the torque depends on the angle Φ between the electric dipole moment and ------------",
+      options: ["Electric field", "Magnetic field", "Nuclear field", "Electric current"],
+      answer: "Electric field"
+    },
+    {
+      number: 2,
+      question: "The potential energy U for a dipole in an electric field is given by",
+      options: ["U = -P o E", "U = -P o q", "U = -qE", "U = -P o Φ"],
+      answer: "U = -P o E"
+    },
+    {
+      number: 3,
+      question: "A charge of 1.0 x 105 C experiences a force of a 4N at a certain point in space. What is the electric field intensity?",
+      options: ["4.0 x 105 N/C", "4.0 x 10-5 N/C", "6.0 x 10-2 N/C", "6.0 x 102 N/C"],
+      answer: "4.0 x 10-5 N/C"
+    },
+    {
+      number: 4,
+      question: "The gain or loss of electrons in an atom is called",
+      options: ["reduction", "electronegativity", "protonation", "induction"],
+      answer: "induction"
+    },
+    {
+      number: 5,
+      question: "Calculate the electric field intensity in vacuum at a distance of 10cm from a charge of 5 x 10-4C",
+      options: ["4.5 x 108 N/C", "4.5 x 107 N/C", "4.5 x 105 N/C", "4.5 x 10-8 N/C"],
+      answer: "4.5 x 108 N/C"
+    },
+     {
+    number: 6,
+    question: "Rubber band and nylon are examples of",
+    options: ["Insulator", "conductors", "semiconductors", "metals"],
+    answer: "Insulator"
+  },
+  {
+    number: 7,
+    question: "The act of charging a metal ball using a copper wire and an electrically charged plastic rod in which the plastic rod can give the other body a charge of opposite sign without losing any of its own charge is known as charging by",
+    options: ["conduction", "friction", "induction", "distortion"],
+    answer: "induction"
+  },
+  {
+    number: 8,
+    question: "The deficiency or excessiveness of an electron in an atom is known as",
+    options: ["coulomb", "current", "electrostatic", "electric charge"],
+    answer: "electric charge"
+  },
+  {
+    number: 9,
+    question: "If 1019 electrons are placed on an uncharged metallic sphere, how much electric charge is on the sphere?",
+    options: ["1.6C", "1.5C", "1.7C", "6.0C"],
+    answer: "1.6C"
+  },
+  {
+    number: 10,
+    question: "Two-point charges q1 = +25 nC and q2 = -75 nC are separated by a distance r = 3.0cm. find the magnitude of the force that q1 exerts on q2",
+    options: ["0.0019N", "0.19N", "0.0019N", "0.019N"],
+    answer: "0.019N"
+  },
+  {
+    number: 11,
+    question: "The simplest atom is the hydrogen atom and it contains",
+    options: [
+      "1 proton in its nucleus balanced by 2 electrons orbiting the nucleus",
+      "1 proton in its nucleus balanced by 1 electron orbiting its nucleus",
+      "1 proton in its nucleus balanced by 3 electrons orbiting its nucleus",
+      "1 proton in its nucleus balanced by 4 electrons orbiting the nucleus"
+    ],
+    answer: "1 proton in its nucleus balanced by 1 electron orbiting its nucleus"
+  },
+  {
+    number: 12,
+    question: "If an atom loses one or more electrons in its outer shells, the protons outnumber the electrons so that the atom carries a net positive electric charge. In this condition, the atom is called a positive ion. If an atom gains electron, its net electric charge becomes negative. The atom then is called a negative ion. The process by which atoms gain or lose electrons is called",
+    options: ["Ionization", "protonation", "reduction", "addition"],
+    answer: "Ionization"
+  },
+  {
+    number: 13,
+    question: "A dielectric material has a negative charge of 12.5 x 1018 electrons (1 C = 6.25 x 1018 electrons). What is its charge in coulombs?",
+    options: ["-Q = 2 C", "-Q = 1 C", "-Q = 1.5 C", "-Q = 2.5 C"],
+    answer: "-Q = 2 C"
+  },
+  {
+    number: 14,
+    question: "If a current of 2 A flows through a meter for 1 minute, how many coulombs pass through the meter? [Hint: 1 A is 1 C per second (C/s)]",
+    options: ["120 C", "100 C", "60 C", "180 C"],
+    answer: "120 C"
+  },
+  {
+    number: 15,
+    question: "The ability of a charge to do work is called its",
+    options: ["energy", "force", "potential", "electric field"],
+    answer: "potential"
+  },
+  {
+    number: 16,
+    question: "Two charges are located on the x – axis with q1 = 2.3 x 10-8 C at the origin and with q2 = -5.6 x 10-8 C at x = 1.30m. find the force exerted by these two charges on a third charge of q = 3.3 x 10-8 C which is located at x = 0.24m on the x axis",
+    options: ["1.34 x 10-4 N", "1.24 x 10-4 N", "1.44 x 10-4 N", "1.54 x 10-4 N"],
+    answer: "1.24 x 10-4 N"
+  },
+  {
+    number: 17,
+    question: "A particle of charge Q = 4.1 x 10-6 C is placed at the origin. If one wants to exert a force of 6.3 x 10-6 N on the particle in the +x direction with a positive charge of 1.6 x 107 C, where must the charge be placed?",
+    options: ["x = -20.4m", "x = -30.6m", "x = 30.6m", "x = -20.6m"],
+    answer: "x = -30.6m"
+  },
+  {
+    number: 18,
+    question: "A charge of 2.3 x 10-4 C is in an electric field and feels a force of 0.34 N in the -x direction. What is the electric field at that point?",
+    options: ["|E| = 1.48 x 103 N/C", "|E| = 1.48 x 102 N/C", "|E| = 1.48 x 104 N/C", "|E| = 1.28 x 103 N/C"],
+    answer: "|E| = 1.48 x 103 N/C"
+  },
+  {
+    number: 19,
+    question: "Two charges, Q1 and Q2 are located at the origin and at x = 0.36cm, Q1=3.3 x 10-6 C and Q2=-5.1 x 10-6 C at x = 0.36cm respectively. A third charge, Q = -9.3 x 10-7 C is moved far away (r = ∞) to a point in the y axis, y = 0.48cm, what is the potential energy between q and at this point?",
+    options: ["Up = 575 J", "Up = 57.5 J", "Up = 5.75 J", "Up = 0.575 J"],
+    answer: "Up = 0.575 J"
+  },
+  {
+    number: 20,
+    question: "Electrostatic forces are governed by a simple relationship known as",
+    options: ["ohm’s law", "newton’s law", "coulomb’s law", "faraday’s law"],
+    answer: "coulomb’s law"
+  },
+  {
+    number: 21,
+    question: "Electric charges at rest is referred to as",
+    options: ["electric current", "electrostatic", "electric field", "rest charge"],
+    answer: "electrostatic"
+  },
+  {
+    number: 22,
+    question: "Which of the following statement is correct?",
+    options: [
+      "two negative charges or two positive charges repel each other",
+      "two positive charges attracts and two negative charges repel each other",
+      "a positive charge and a negative charge repel each other",
+      "a positive charge attracts another positive charge but repels a negative charge"
+    ],
+    answer: "two negative charges or two positive charges repel each other"
+  },
+  {
+    number: 23,
+    question: "Which of the following cannot be found in the nucleus of an atom?",
+    options: ["proton", "electron", "neutron", "none of the above"],
+    answer: "electron"
+  },
+  {
+    number: 24,
+    question: "A neutral atom has as many electrons as it does protons",
+    options: ["true", "false", "can’t say"],
+    answer: "true"
+  },
+  {
+    number: 25,
+    question: "When an atom loses an electron, it becomes",
+    options: ["positively charge", "negatively charged", "neutral atom", "an electron"],
+    answer: "positively charge"
+  },
+  {
+    number: 26,
+    question: "The principle of conservation of charge states that",
+    options: [
+      "the force of attraction between two charges is directly proportional to the square of their distance apart",
+      "the force of repulsion between two charges is inversely proportional to the square of their distances apart",
+      "the magnitude of charge of the electron is a natural unit of electric field intensity",
+      "the algebraic sum of all the electric charges in a closed system is constant"
+    ],
+    answer: "the algebraic sum of all the electric charges in a closed system is constant"
+  },
+  {
+    number: 27,
+    question: "When the distance r between two charged bodies doubles, the force",
+    options: [
+      "increases to one-quarter of its initial value",
+      "decreases to one-quarter of its initial value",
+      "decreases to one-half of its initial value",
+      "increases to one-half of its initial value"
+    ],
+    answer: "decreases to one-quarter of its initial value"
+  },
+  {
+    number: 28,
+    question: "Coulomb’s law states that",
+    options: [
+      "the magnitude of the electric force between two point charges is directly to the sum of the charges and inversely proportional to the square of the distance between them",
+      "the magnitude of the electric force between two point charges is directly to the product of the charges and inversely proportional to the distance between them",
+      "the magnitude of the electric force between two point charges is directly to the  product of the charges and inversely proportional to the distance between them",
+      "the magnitude of the electric force between two point charges is directly to the product of the charges and inversely proportional to the square of the distance between them"
+    ],
+    answer: "the magnitude of the electric force between two point charges is directly to the product of the charges and inversely proportional to the square of the distance between them"
+  },
+  {
+    number: 29,
+    question: "The electrostatic force between two charges is 120N, if the distance between the charges is doubled, what will be the value of the new force?",
+    options: ["10N", "25N", "40N", "30N"],
+    answer: "30N"
+  },
+  {
+    number: 30,
+    question: "How many electrons must be placed on each of two small spheres placed 3cm apart if the force of repulsion between them is to be 1019 N?",
+    options: ["526", "625", "225", "525"],
+    answer: "625"
+  },
+  {
+    number: 31,
+    question: "If 106 electrons are placed on an uncharged body, what is the total charge on the body? (1e = 1.6 x 10 19 C)",
+    options: ["1.6 x 10-13C", "1.6 x 10-19C", "1.6 x 10-25C", "1.6 x 10-15C"],
+    answer: "1.6 x 10-13C"
+  },
+  {
+    number: 32,
+    question: "If the electrostatic force between two equally charged bodies separated by a distance of 0.5m is 36 x 109 N, what is the charge on each body?",
+    options: ["2C", "1C", "3C", "4C"],
+    answer: "1C"
+  },
+  {
+    number: 33,
+    question: "The region where a charged body experiences an electric force is called ______",
+    options: ["Force field", "Magnetic field", "Gravitational field", "Electric field"],
+    answer: "Electric field"
+  },
+  {
+    number: 34,
+    question: "Electric field is a _____",
+    options: ["vector field", "scalar field", "none of the above", "all of the above"],
+    answer: "vector field"
+  },
+  {
+    number: 35,
+    question: "Which of the following statements is correct?",
+    options: [
+      "The field about an isolated positive charge is radially inward while the field about a negative charge is radially outward",
+      "The field about an isolated positive charge and isolated negative charge is both radially inward",
+      "The field about an isolated positive charge and isolated negative charge is both radially outward",
+      "The field about an isolated positive charge is radially outward while the field about a negative charge is radially inward"
+    ],
+    answer: "The field about an isolated positive charge is radially outward while the field about a negative charge is radially inward"
+  },
+  {
+    number: 36,
+    question: "What is the magnitude of the electric field at a field point 2.0 m from a point charge q = 4.0 nC?",
+    options: ["18.0 N/C", "9.0 N/C", "36.0 N/C", "6.0 N/C"],
+    answer: "9.0 N/C"
+  },
+  {
+    number: 37,
+    question: "The total electric field at a point P is the vector sum of the fields at P due to each point charge in the charge distribution. This is the principle of",
+    options: ["Superposition of electric field", "Norton’s theory", "Coulomb’s rule", "Linear charge density"],
+    answer: "Superposition of electric field"
+  },
+  {
+    number: 38,
+    question: "The imaginary line or curve drawn through a region of space so that its tangent at any point is in the direction of the electric field vector at the point, is called __________",
+    options: ["Vector line", "Electrostatic line", "Electric field line", "Latitude"],
+    answer: "Electric field line"
+  },
+  {
+    number: 39,
+    question: "Calculate the electric field intensity at a point 15 cm from a charge of 10 μC",
+    options: ["4 x 10-6 N/C", "4 x 106 N/C", "6 x 10-3 N/C", "6 x 103 N/C"],
+    answer: "4 x 106 N/C"
+  },
+  {
+    number: 40,
+    question: "What is the unit of electric field?",
+    options: ["Volt", "Coulomb", "Newton", "Newton/Coulomb"],
+    answer: "Newton/Coulomb"
+  },
+  // ... add ALL PHY 123 questions here
+  ],
+cee101: [
+  {
+    number: 1,
+    question: "What are the three main career paths in civil engineering?",
+    options: [
+      "Government, Industry, Academia",
+      "Government, Industry, Education",
+      "Government, Industry, Research",
+      "Government, Academia, Consultancy"
+    ],
+    answer: "Government, Industry, Academia"
+  },
+  {
+    number: 2,
+    question: "In government, civil engineers are primarily involved in which of the following?",
+    options: [
+      "Private infrastructure projects",
+      "Zoning laws and land use planning",
+      "Designing household appliances",
+      "Manufacturing processes"
+    ],
+    answer: "Zoning laws and land use planning"
+  },
+  {
+    number: 3,
+    question: "Which of the following is a key focus for civil engineers working in academia?",
+    options: [
+      "Overseeing construction projects",
+      "Managing natural resources",
+      "Enforcing building codes",
+      "Conducting research and development"
+    ],
+    answer: "Conducting research and development"
+  },
+  {
+    number: 4,
+    question: "What aspect of civil engineering is highlighted in the industry sector?",
+    options: [
+      "Regulatory compliance",
+      "Public infrastructure projects",
+      "Profitdriven and innovative solutions",
+      "Urban planning"
+    ],
+    answer: "Profitdriven and innovative solutions"
+  },
+  {
+    number: 5,
+    question: "In the context of environmental protection, what do civil engineers manage?",
+    options: [
+      "Budgets and timelines",
+      "Zoning laws",
+      "Natural resources and sustainability practices",
+      "Commercial developments"
+    ],
+    answer: "Natural resources and sustainability practices"
+  },
+  {
+    number: 6,
+    question: "What is one challenge mentioned for civil engineers in the industry sector?",
+    options: [
+      "Teaching and mentoring students",
+      "Budget constraints and material selection",
+      "Implementing zoning laws",
+      "Conducting inspections"
+    ],
+    answer: "Budget constraints and material selection"
+  },
+  {
+    number: 7,
+    question: "Which sector focuses on knowledge creation and dissemination?",
+    options: [
+      "Government",
+      "Industry",
+      "Academia",
+      "Consulting"
+    ],
+    answer: "Academia"
+  },
+  {
+    number: 8,
+    question: "What type of compliance is a focus for civil engineers in the government?",
+    options: [
+      "Financial",
+      "Regulatory and safety",
+      "Environmental",
+      "Technological"
+    ],
+    answer: "Regulatory and safety"
+  },
+  {
+    number: 9,
+    question: "Which of the following best describes the role of civil engineers in project management?",
+    options: [
+      "Supervising student research",
+      "Implementing environmental policies",
+      "Conducting public surveys",
+      "Managing budgets, timelines, and resources"
+    ],
+    answer: "Managing budgets, timelines, and resources"
+  },
+  {
+    number: 10,
+    question: "What type of infrastructure projects do civil engineers focus on in the government sector?",
+    options: [
+      "Public buildings, roads, and bridges",
+      "Private homes",
+      "Highrise buildings",
+      "Industrial facilities"
+    ],
+    answer: "Public buildings, roads, and bridges"
+  }
+],
+  phy124: [
+    {
+      number: 1,
+      question: "A girl stands 34m away from a reflecting wall. She makes sound and hears an echo after 0.2 seconds. Find the velocity of sound.",
+      options: ["435m/s", "340m/s", "289m/s"],
+      answer: "340m/s"
+    },
+    {
+      number: 2,
+      question: "A radio station broadcasts on frequency of 300 kHz and the wavelength of its signal is 1000m. Calculate the speed of the radio wave in ms-1.",
+      options: ["3 × 10^8m/s", "6 × 10^-14m/s", "4 × 10^4"],
+      answer: "3 × 10^8m/s"
+    },
+    {
+      number: 3,
+      question: "If the vibration of particle of the medium are right angles to direction of propagation of wave, then such wave is called",
+      options: ["mechanical wave", "transverse wave", "longitudinal wave"],
+      answer: "transverse wave"
+    },
+    {
+      number: 4,
+      question: "Calculate the frequency of the wave if its speed is 30cms−1 and the wave length is 6cm.",
+      options: ["5Hz", "6Hz", "4Hz"],
+      answer: "5Hz"
+    },
+    {
+      number: 5,
+      question: "A source of frequency 256Hz is set into vibration. Calculate the wave length of the waves produced, the speed of sound in air is 332ms−1 in air.",
+      options: ["1.50m", "1m", "1.30m"],
+      answer: "1.30m"
+    },
+    {
+      number: 6,
+      question: "The speed of a certain wave in air is 3 × 10^8ms−1. The wave length of the wave is 5 × 10^−7m. Calculate the frequency of the wave.",
+      options: ["6 × 10^14Hz", "3 × 10^20Hz", "6 × 10^-14Hz"],
+      answer: "6 × 10^14Hz"
+    },
+    {
+      number: 7,
+      question: "A radio station produces waves of wave length 10m. If the wave speed is 3 × 10^8ms−1 calculate i. Frequency of radio wave. ii. Period, T iii. Number of cycles completed in 10^8",
+      options: ["F= 3*10^7Hz, T=3.33*10^-8S, N=3*10^15"],
+      answer: "F= 3*10^7Hz, T=3.33*10^-8S, N=3*10^15"
+    },
+    {
+      number: 8,
+      question: "A gun was fired and an echo from a cliff was heard 8 seconds later. If the velocity of sound is 340ms−1, how far was the gun from the cliff?",
+      options: ["1300m", "1330m", "1360m"],
+      answer: "1360m"
+    },
+    {
+      number: 9,
+      question: "Which of these phenomena obeys the Huygens’ principle",
+      options: ["Conduction", "Reflection", "Radiation"],
+      answer: "Reflection"
+    },
+    {
+      number: 10,
+      question: "Huygens' Principle provides a powerful method for predicting the behavior of wave-fronts by treating each point on a wave-front as",
+      options: ["Wavelets", "Source of secondary wavelets", "source of primary wavelets"],
+      answer: "Source of secondary wavelets"
+    },
+    {
+      number: 11,
+      question: "Which of these can be classified as an electromagnetic wave",
+      options: ["Seismic wave", "Microwave", "strings"],
+      answer: "Microwave"
+    },
+    {
+      number: 12,
+      question: "The rate at which the wave propagates through a medium can be given as",
+      options: ["ω = 2πf", "k=2π/λ", "v = fλ"],
+      answer: "v = fλ"
+    },
+    {
+      number: 13,
+      question: "The change in direction of a wave as it passes from one medium to another is known as",
+      options: ["Reflection", "Refraction", "Polarization"],
+      answer: "Refraction"
+    },
+    {
+      number: 14,
+      question: "For a one-dimensional wave traveling along the x-axis, curvature of the wave is given as",
+      options: ["(𝜕 ^2 u)/ 𝜕x^2", "(𝜕 ^2 u)/ 𝜕t^2", "u(x, t) = f (x − vt) + g(x + vt)"],
+      answer: "(𝜕 ^2 u)/ 𝜕x^2"
+    },
+    {
+      number: 15,
+      question: "Determine the total energy emitted and used by a seismic wave of weight 10N and speed of 5m/s",
+      options: ["34j", "12.75j", "15j"],
+      answer: "15j"
+    },
+    {
+      number: 16,
+      question: "How much power is used to cause a guitar string of weight 50N to emit waves in 8 seconds",
+      options: ["6.25W", "3.32J", "6.25J", "3.32W"],
+      answer: "6.25W"
+    },
+    {
+      number: 17,
+      question: "A repeated reflection of a wave that arrives back at the source after a delay is called",
+      options: ["Echo", "beat", "wavelet"],
+      answer: "Echo"
+    },
+    {
+      number: 18,
+      question: "A periodic variation in amplitude caused by the overlap of two waves with slightly different frequencies is called",
+      options: ["wavelet", "Echo", "Beat"],
+      answer: "Beat"
+    },
+    {
+      number: 19,
+      question: "The Doppler effect is true for",
+      options: ["sound waves", "Ripples", "strings"],
+      answer: "sound waves"
+    },
+    {
+      number: 20,
+      question: "The speed of sound in air at room temperature (20°C) is approximately ___ meters per second (m/s)",
+      options: ["300", "343", "243", "200"],
+      answer: "343"
+    },
+    {
+      number: 21,
+      question: "The speed of sound in water at room temperature is approximately____meters per second (m/s)",
+      options: ["1480", "1840", "1400", "1800"],
+      answer: "1480"
+    },
+    {
+      number: 22,
+      question: "The speed of sound in gases is independent on the",
+      options: ["temperature", "pressure", "Molecular composition of the gas", "none of the above"],
+      answer: "none of the above"
+    },
+    {
+      number: 23,
+      question: "𝑣 = square root (y.R.T/M) denotes",
+      options: ["the speed of sound in air", "the speed of sound in gases", "all of the above"],
+      answer: "all of the above"
+    },
+    {
+      number: 24,
+      question: "____ is the most efficient medium for sound propagation",
+      options: ["liquid", "solid", "gas"],
+      answer: "solid"
+    },
+    {
+      number: 25,
+      question: "____ is the least efficient medium for sound propagation",
+      options: ["liquid", "solid", "gas"],
+      answer: "gas"
+    },
+    {
+      number: 26,
+      question: "Huygens' Principle explains how waves bend around obstacles and spread out after passing through small openings. This phenomenon is known as",
+      options: ["Diffraction", "polarization", "Refraction"],
+      answer: "Diffraction"
+    },
+    {
+      number: 27,
+      question: "Where P, E, A and f denotes power, energy, amplitude and frequency. Which of the following expressions is not true",
+      options: ["(𝐸 ∝ 𝐴^2)", "(𝑃 ∝ 𝐴^2 𝑋 𝑓)", "(𝐸 ∝ 𝐴^2/f)"],
+      answer: "(𝐸 ∝ 𝐴^2/f)"
+    },
+    {
+      number: 28,
+      question: "One of these is not a wave classification according to particle motion",
+      options: ["transverse", "electromagnetic", "longitudinal"],
+      answer: "electromagnetic"
+    },
+    {
+      number: 29,
+      question: "The wave equation that describes the propagation of waves in all directions in space is known as",
+      options: ["Two-Dimensional Wave Equation", "One-Dimensional Wave Equation", "Three-Dimensional Wave Equation"],
+      answer: "Three-Dimensional Wave Equation"
+    },
+    {
+      number: 30,
+      question: "The wave equation that describes the propagation of waves on surfaces, such as water waves in a pond or vibrations on a drum membrane is known as",
+      options: ["Two-Dimensional Wave Equation", "One Dimensional Wave Equation", "Three-Dimensional Wave Equation"],
+      answer: "Two-Dimensional Wave Equation"
+    },
+    {
+      number: 31,
+      question: "The wave equation that describes the propagation of waves along a single spatial coordinate, x is known as",
+      options: ["Two-Dimensional Wave Equation", "One-Dimensional Wave Equation", "Three Dimensional Wave Equation"],
+      answer: "One-Dimensional Wave Equation"
+    },
+    {
+      number: 32,
+      question: "Spreading of waves due to differences in phase velocity is known as",
+      options: ["polarization", "dispersion", "refraction"],
+      answer: "dispersion"
+    },
+    {
+      number: 33,
+      question: "Echo are induced by interference between two waves with close but different frequencies.",
+      options: ["true", "false"],
+      answer: "true"
+    },
+    {
+      number: 34,
+      question: "The rate at which the wave propagates through a medium refers to the",
+      options: ["speed of the wave in the medium", "frequency of the wave in the medium", "angular velocity of the wave in the medium."],
+      answer: "speed of the wave in the medium"
+    },
+    {
+      number: 35,
+      question: "The position of a point in time on a waveform cycle is known as",
+      options: ["wavefront", "coordinate", "phase"],
+      answer: "phase"
+    },
+    {
+      number: 36,
+      question: "Calculate the frequency of the wave if its speed is 80cms−1 and the wave length is 0.52m.",
+      options: ["13Hz", "1.54Hz", "3.2Hz"],
+      answer: "3.2Hz"
+    },
+    {
+      number: 37,
+      question: "A radio station broadcasts on frequency of 300 MHz and the wavelength of its signal is 100m. Calculate the speed of the radio wave in ms-1",
+      options: ["3 × 10^8m/s", "4 × 10^3m/s", "53m/s"],
+      answer: "3 × 10^8m/s"
+    },
+    {
+      number: 38,
+      question: "A source of frequency 250Hz is set into vibration. Calculate the wave length of the waves produced, the speed of sound in air is 80ms−1 in air.",
+      options: ["32m", "0.15m", "0.32m"],
+      answer: "0.32m"
+    },
+    {
+      number: 39,
+      question: "A ball is placed 16m away from a reflecting wall. It bounces and makes sound, an echo is heard after 0.1 seconds. Find the velocity of sound.",
+      options: ["320m/s", "123m/s", "424m/s"],
+      answer: "320m/s"
+    },
+    {
+      number: 40,
+      question: "A gun was fired and an echo from a cliff was heard 6 seconds later. If the velocity of sound is 340ms−1, how far was the gun from the cliff?",
+      options: ["1020m", "1200m", "2040m"],
+      answer: "2040m"
+    },
+    {
+      number: 41,
+      question: "A wave travels a distance of 6000cm in 20 seconds. If the distance travelled is equivalent to the distance between 15 consecutive crests, calculate the wave length of the wave.",
+      options: ["8m", "2m", "4m"],
+      answer: "4m"
+    },
+    {
+      number: 42,
+      question: "The equation above represents a",
+      options: ["Three-Dimensional Wave Equation", "Two-Dimensional Wave Equation", "One-Dimensional Wave Equation"],
+      answer: "One-Dimensional Wave Equation"
+    },
+    {
+      number: 43,
+      question: "Two-Dimensional Wave Equation: Describes wave propagation",
+      options: ["In spaces", "on surfaces", "in vacuum"],
+      answer: "on surfaces"
+    },
+    {
+      number: 44,
+      question: "One of these is not a wave classification according to medium",
+      options: ["mechanical", "electromagnetic", "longitudinal"],
+      answer: "electromagnetic"
+    },
+    {
+      number: 45,
+      question: "How much power is used to cause a guitar string of weight 60N to emit waves in 5seconds",
+      options: ["12W", "12J", "5W", "5J"],
+      answer: "12W"
+    },
+    {
+      number: 46,
+      question: "Beats are induced by interference between two waves with close but different frequencies.",
+      options: ["true", "false"],
+      answer: "true"
+    },
+    {
+      number: 47,
+      question: "The Doppler effect is true for",
+      options: ["Ripples", "light waves", "strings"],
+      answer: "light waves"
+    },
+    {
+      number: 48,
+      question: "A progressive wave travels a distance of 31.5m in 20 seconds. If the distance travelled is equivalent to the distance between 10 consecutive crests, calculate; i. The wave length of the wave. ii. The period of the wave.",
+      options: ["Wave length = 3.15m, Period = 0.2s"],
+      answer: "Wave length = 3.15m, Period = 0.2s"
+    },
+    {
+      number: 49,
+      question: "Calculate the wavelength of a radio wave of frequency 2.5 × 105 Hz, given that the velocity of electromagnetic waves in free space is 2.5 × 105Hz, given that the velocity of electromagnetic waves in free space is 3.0 × 108ms-1.",
+      options: ["2400m", "1200m", "1020m"],
+      answer: "1200m"
+    },
+    {
+      number: 50,
+      question: "A slinky spring is made to vibrate in a transverse mode with a frequency of 4Hz. If the distance between two successive crests of the wave train is 0.7m, calculate the speed of the waves along the slinky spring.",
+      options: ["2m/s", "3.2m/s", "2.8m/s"],
+      answer: "2.8m/s"
+    }
+  ],
+  phy101: [
+    {
+      number: 1,
+      question: "Large transformers, when used for some time, become very hot and are cooled by circulating oil. The heating of the transformer is due to:",
+      options: ["The heating effect of current alone", "Hysteresis loss alone", "Both the heating effect of current and hysteresis loss", "Intense sunlight at noon"],
+      answer: "Both the heating effect of current and hysteresis loss"
+    },
+    {
+      number: 2,
+      question: "Nuclear sizes are expressed in a unit named:",
+      options: ["Fermi", "Angstrom", "Newton", "Tesla"],
+      answer: "Fermi"
+    },
+    {
+      number: 3,
+      question: "Light year is a unit of:",
+      options: ["Time", "Distance", "Light", "Intensity of light"],
+      answer: "Distance"
+    },
+    {
+      number: 4,
+      question: "Mirage is due to:",
+      options: ["Unequal heating of different parts of the atmosphere", "Magnetic disturbances in the atmosphere", "Depletion of ozone layer in the atmosphere", "Equal heating of different parts of the atmosphere"],
+      answer: "Unequal heating of different parts of the atmosphere"
+    },
+    {
+      number: 5,
+      question: "Light from the Sun reaches us in nearly:",
+      options: ["2 minutes", "4 minutes", "8 minutes", "16 minutes"],
+      answer: "8 minutes"
+    },
+    {
+      number: 6,
+      question: "The unit of force is a:",
+      options: ["Derived Unit", "Basic Unit", "Fundamental Unit", "None of the above"],
+      answer: "Derived Unit"
+    },
+    {
+      number: 7,
+      question: "Atmospheric pressure exerted on earth is due to:",
+      options: ["Gravitational pull", "Rotation of earth", "Revolution of earth", "Uneven heating of earth"],
+      answer: "Gravitational pull"
+    },
+    {
+      number: 8,
+      question: "What is the SI unit of Force?",
+      options: ["Pascal", "Boyle", "Newton", "Watt"],
+      answer: "Newton"
+    },
+    {
+      number: 9,
+      question: "What measures Air pressure?",
+      options: ["Barkometer", "Bolometer", "Spectrometer", "Barometer"],
+      answer: "Barometer"
+    },
+    {
+      number: 10,
+      question: "The rice is cooked more quickly in a pressure cooker because:",
+      options: ["It is covered.", "Less quantity of water is used.", "None of these", "Water boils at a higher temperature under pressure."],
+      answer: "Water boils at a higher temperature under pressure."
+    },
+    {
+      number: 11,
+      question: "The number of waves per second in a sound is called ________ of that sound.",
+      options: ["Velocity", "Frequency", "Displacement", "Acceleration"],
+      answer: "Frequency"
+    },
+    {
+      number: 12,
+      question: "Sound waves do not show the phenomenon of",
+      options: ["Refraction", "Interference", "Diffraction", "Polarisation"],
+      answer: "Polarisation"
+    },
+    {
+      number: 13,
+      question: "Speed of sound is maximum in which among the following?",
+      options: ["Gases", "Vaccum", "Liquids", "Solids"],
+      answer: "Solids"
+    },
+    {
+      number: 14,
+      question: "The ringing of an electric bell in an enclosed evacuated glass bell jar is not heard outside because",
+      options: ["The ringing is not loud enough", "The glass of the bell jar absorbs the sound waves", "The bell jar is too small", "There is no air or any other gas in the bell jar"],
+      answer: "There is no air or any other gas in the bell jar"
+    },
+    {
+      number: 15,
+    question: "What is the full form of 'RADAR' ?",
+    options: ["Radio Detecting and Ranging", "Region Device and Ranging", "Radio Detect and Rangs", "Radio Device and Ranging"],
+    answer: "Radio Detecting and Ranging"
+  },
+  {
+    number: 16,
+    question: "Thermocouple consists of",
+    options: ["Two dissimilar metals", "Two similar metals", "Metal and a semiconductor", "Metal and an insulator"],
+    answer: "Two dissimilar metals"
+  },
+  {
+    number: 17,
+    question: "Water has maximum density at",
+    options: ["100°C", "0°C", "4°C", "273°C"],
+    answer: "4°C"
+  },
+  {
+    number: 18,
+    question: "When water freezes its density",
+    options: ["Decreases", "Becomes Zero", "Remains constant", "Increases"],
+    answer: "Decreases"
+  },
+  {
+    number: 19,
+    question: "Which of the following are methods of heat transfer?",
+    options: ["Convection", "Evaporation", "Revolution", "Thermal Expansion"],
+    answer: "Convection"
+  },
+  {
+    number: 20,
+    question: "Heat energy is transferred by conduction whenever molecules",
+    options: ["Collide each other", "Means of photons", "Particles replaces there places", "All of the above"],
+    answer: "All of the above"
+  },
+  {
+    number: 21,
+    question: "Gravitational force is maximum at which place",
+    options: ["Poles", "Tropic of cancer", "Tropic of capricorn", "Equator"],
+    answer: "Poles"
+  },
+  {
+    number: 22,
+    question: "A metal ball and a rubber ball, both having the same mass, strike a wall normally with the same velocity. The rubber ball rebounds and the metal ball does not rebound. It can be concluded that",
+    options: ["The rubber ball suffers greater change in momentum", "The metal ball suffers greater change in momentum", "Both suffer the same change in momentum", "The initial momentum of the rubber ball is greater than that of the metal ball"],
+    answer: "The rubber ball suffers greater change in momentum"
+  },
+  {
+    number: 23,
+    question: "A boy sitting in an open car moving with the constant speed throws a ball straight up into the air. The ball falls",
+    options: ["Behind him", "In front of him", "Into his hand", "By his side"],
+    answer: "Into his hand"
+  },
+  {
+    number: 24,
+    question: "Rate of change of momentum is",
+    options: ["Area", "Pressure", "Force", "Velocity"],
+    answer: "Force"
+  },
+  {
+    number: 25,
+    question: "Which law is also called law of inertia ?",
+    options: ["Newton first law", "Newton second law", "Newton third law", "All of above"],
+    answer: "Newton first law"
+  },
+  {
+    number: 26,
+    question: "Anemometer is an instrument meant for measuring",
+    options: ["Velocity", "Air masses", "Wind speed", "Temperature"],
+    answer: "Wind speed"
+  },
+  {
+    number: 27,
+    question: "A fountain pen works on the principle of",
+    options: ["Flow of liquids from higher to lower potential", "Capillary action", "Bernoulli's principle", "Viscosity of liquids"],
+    answer: "Capillary action"
+  },
+  {
+    number: 28,
+    question: "A barometer is kept inside a bell jar. Air is slowly pumped out of the jar.",
+    options: ["The mercury level starts rising", "The mercury level starts falling", "The mercury level does not change", "The bell jar breaks up"],
+    answer: "The mercury level starts falling"
+  },
+  {
+    number: 29,
+    question: "The temperature at which water boils depends mainly on",
+    options: ["Air Pressure", "Specific heat", "Density", "Relative humidity"],
+    answer: "Air Pressure"
+  },
+  {
+    number: 30,
+    question: "Air pressure is measured in which of the following units?",
+    options: ["Steridian", "Kg/mts", "Newton", "Pascal"],
+    answer: "Pascal"
+  },
+  {
+    number: 31,
+    question: "The snow on the mountains does not melt all at once when it is heated by the sun because:",
+    options: ["It becomes very hard", "It reflects most of the heat from the sun", "It has a low specific heat capacity", "It has a high latent heat of fusion"],
+    answer: "It has a high latent heat of fusion"
+  },
+  {
+    number: 32,
+    question: "Cloudy nights are warmer compared to clear cloudless nights, because clouds mainly",
+    options: ["Absorb heat from the atmosphere send it towards earth", "Prevent cold waves from the sky descending on earth", "Reflect back the heat given by earth", "Produce heat and radiate it toward earth"],
+    answer: "Absorb heat from the atmosphere send it towards earth"
+  },
+  {
+    number: 33,
+    question: "In which one of the following the phenomenon of total internal reflection of light is used ?",
+    options: ["Formation of mirage", "Working of binoculars", "Formation of rainbow", "Twinkling of stars"],
+    answer: "Working of binoculars"
+  },
+  {
+    number: 34,
+    question: "Which type of mirror is used in the head lights of vehicles ?",
+    options: ["Plane mirror", "Concave mirror", "Convex mirror", "Parabolic mirror"],
+    answer: "Parabolic mirror"
+  },
+  {
+    number: 35,
+    question: "If objects appear enlarged and inverted in a rear view mirror, then which type of mirror is used?",
+    options: ["Concave", "Convex", "Cylindrical", "Plane"],
+    answer: "Convex"
+  },
+  {
+    number: 36,
+    question: "Which one of the following has the highest value of specific heat?",
+    options: ["Glass", "Copper", "Lead", "Water"],
+    answer: "Water"
+  },
+  {
+    number: 37,
+    question: "Water is not suitable as a calorimetric substance because it……. :",
+    options: ["Has high specific heat", "Is a good conductor", "Has high boiling point", "Low latent heat of vapourization"],
+    answer: "Is a good conductor"
+  },
+  {
+    number: 38,
+    question: "Water is used in car radiator because of its",
+    options: ["Low density", "Easy availability", "High specific heat capacity", "Low boiling point"],
+    answer: "High specific heat capacity"
+  },
+  {
+    number: 39,
+    question: "How much mechanical work must be done to completely melt 1 gram of ice at 0°C ?",
+    options: ["4.2 J", "80 J", "336 J", "2268 J"],
+    answer: "336 J"
+  },
+  {
+    number: 40,
+    question: "Water pipes in hilly areas often burst on a cold frosty night, because",
+    options: ["The material of which pipes are made contracts due to cold and so breaks", "Water in the pipes freezes and on freezing water expands, so pipes break", "Frost makes the pipes rusty, so they break", "None of these"],
+    answer: "Water in the pipes freezes and on freezing water expands, so pipes break"
+  },
+  {
+    number: 41,
+    question: "Optical fibre works on which of the following principle of light?",
+    options: ["Reflection", "Refraction", "Diffraction", "Total internal reflection"],
+    answer: "Total internal reflection"
+  },
+  {
+    number: 42,
+    question: "Which colour of light shows maximum deviation when passed through a prism ?",
+    options: ["White", "Red", "Violet", "Green"],
+    answer: "Violet"
+  },
+  {
+    number: 43,
+    question: "The sparkling of a diamond is due to",
+    options: ["Total internal reflection of light", "Interference of light", "Polarisation of light", "Refraction of light"],
+    answer: "Total internal reflection of light"
+  },
+  {
+    number: 44,
+    question: "Stars appear twinkling because of ......... of light.",
+    options: ["Reflection", "Scattering", "Emission", "Absorption"],
+    answer: "Scattering"
+  },
+  {
+    number: 45,
+    question: "Stars in the sky appear to twinkle due to",
+    options: ["A series of refractions", "A series of reflections", "A surface tension phenomenon", "Multiple diminishing brightness"],
+    answer: "A series of refractions"
+  },
+  {
+    number: 46,
+    question: "A thin oil film on a water surface appears coloured because of",
+    options: ["Reflection", "Interference", "Diffraction", "Polarization"],
+    answer: "Interference"
+  },
+  {
+    number: 47,
+    question: "The blue colour of sky is due to",
+    options: ["Reflection of sunlight", "Refraction of sunlight", "Scattering of shorter wavelengths of sunlight in the atmosphere", "Scattering of longer wavelengths of sunlight in the atmosphere"],
+    answer: "Scattering of shorter wavelengths of sunlight in the atmosphere"
+  },
+  {
+    number: 48,
+    question: "The phenomenon of light associated with the appearance of blue colour of the sky is",
+    options: ["Interference", "Reflection", "Refraction", "Scattering"],
+    answer: "Scattering"
+  },
+  {
+    number: 49,
+    question: "The sky appears blue because of",
+    options: ["Atmospheric water vapour", "Scattering of light", "Reflection on sea water", "Emision of blue wavelength by the sun"],
+    answer: "Scattering of light"
+  },
+  {
+    number: 50,
+    question: "Light scattering takes place in",
+    options: ["Colloidal solutions", "Acidic solutions", "Electrolyte solutions", "Basic solutions"],
+    answer: "Colloidal solutions"
+  },
+  {
+    number: 51,
+    question: "What is the SI unit of Power?",
+    options: ["Boyle", "Watt", "Newton", "Pascal"],
+    answer: "Watt"
+  },
+  {
+    number: 52,
+    question: "For which one of the following does the centre of mass lie outside the body?",
+    options: ["A fountain pen", "A cricket ball", "A ring", "A book"],
+    answer: "A ring"
+  },
+  {
+    number: 53,
+    question: "When a pail of water is swung in a vertical circle, the water does not fall out at the top of the loop when the speed is",
+    options: ["Below a certain minimum value irrespective of amount of water in the pail", "Above a certain minimum value irrespective of amount of water in the pail", "Above a certain minimum value depending on amount of water in the pail", "Below a certain minimum value depending on amount of water in the pail"],
+    answer: "Above a certain minimum value irrespective of amount of water in the pail"
+  },
+  {
+    number: 54,
+    question: "Fat can be separated from milk in a cream separator because of :",
+    options: ["Cohesive Force", "Gravitational Force", "Centripetal Force", "Centrifugal Force"],
+    answer: "Centrifugal Force"
+  },
+  {
+    number: 55,
+    question: "In case of uniform circular motion, the acceleration is",
+    options: ["Variable in magnitude but constant in direction", "Constant in magnitude and directed radially inwards", "Variable in magnitude but tangential to the circle", "Zero"],
+    answer: "Constant in magnitude and directed radially inwards"
+  },
+  {
+    number: 56,
+    question: "The odometer guage indicates",
+    options: ["The distance travelled by a vehicle", "The depth of the ocean", "Pitch length", "Frequency of the wave"],
+    answer: "The distance travelled by a vehicle"
+  },
+  {
+    number: 57,
+    question: "If a force acts upon two objects at rest, and having different masses for the same amount of time, then which one of the following will be the same for both the objects?",
+    options: ["Acceleration", "Kinetic Energy", "Velocity", "Momentum"],
+    answer: "Momentum"
+  },
+  {
+    number: 58,
+    question: "Consider the following statements : 1. There is no net moment on a body which is in equilibrium. 2. The momentum of a body is always conserved. 3. The kinetic energy of an object is always conserved. Which of the statements given above is/are correct?",
+    options: ["1, 2 and 3", "2 and 3 only", "1 and 2 only", "1 only"],
+    answer: "1, 2 and 3"
+  },
+  {
+    number: 59,
+    question: "The rate of change of linear momentum of a body falling freely under gravity is equal to it's ________ ?",
+    options: ["Kinetic Energy", "Weight", "Potential Energy", "Impulse"],
+    answer: "Weight"
+  },
+  {
+    number: 60,
+    question: "According to the theory of relativity, which of the following always remains constant ?",
+    options: ["Length of an object", "Time", "Space", "Velocity of light"],
+    answer: "Velocity of light"
+  },
+  {
+    number: 61,
+    question: "The mass of a star is two times the mass of the Sun. How it will come to an end ?",
+    options: ["Neutron Star", "Black hole", "White Dwarf", "Red Giant"],
+    answer: "Neutron Star"
+  },
+  {
+    number: 62,
+    question: "Which of the following celestial bodies contains abundant quantities of helium-3, a potential source of energy ?",
+    options: ["Earth", "Moon", "Venus", "Saturn"],
+    answer: "Moon"
+  },
+  {
+    number: 63,
+    question: "The period of revolution of a certain planet in an orbit of radius R is T. Its period of revolution in an orbit of radius 4R will be:",
+    options: ["8 T", "4 T", "1 T", "2 T"],
+    answer: "4 T"
+  },
+  {
+    number: 64,
+    question: "Which is evidence that supports the dynamo theory?",
+    options: ["Earth's outer core contains liquid that conducts electricity", "Earth's core contains a large amount of iron", "Granite and basalt conduct electricity", "Convection occurs in Earth's inner core"],
+    answer: "Earth's outer core contains liquid that conducts electricity"
+  },
+  {
+    number: 65,
+    question: "Which of the following is indicated by the colour of a star ?",
+    options: ["Weight", "Distance", "Temperature", "Size"],
+    answer: "Temperature"
+  },
+  {
+    number: 66,
+    question: "A cycle tyre bursts suddenly. This represents an :",
+    options: ["Isothermal process", "Adiabatic process", "Isochoric process", "Isoboric process"],
+    answer: "Adiabatic process"
+  },
+  {
+    number: 67,
+    question: "Which has the lowest albedo?",
+    options: ["Dark surfaces", "Light surfaces", "Both A & B", "None of the above"],
+    answer: "Dark surfaces"
+  },
+  {
+    number: 68,
+    question: "Which one of the following is a non-dimensional quantity?",
+    options: ["Gas constant", "Strain", "Co-efficient of viscocity", "Plank's constant"],
+    answer: "Strain"
+  },
+  {
+    number: 69,
+    question: "The dimension of Planck constant equals to that of",
+    options: ["Energy", "Momentum", "Angular momentum", "Power"],
+    answer: "Angular momentum"
+  },
+  {
+    number: 70,
+    question: "The recoiling of gun is an example of which of the following?",
+    options: ["Law of Conservation of Angular Momentum", "Law of Conservation of Linear Momentum", "Conversion of Kinetic Energy to Potential Energy", "Law of Conservation of Energy"],
+    answer: "Law of Conservation of Linear Momentum"
+  },
+  {
+    number: 71,
+    question: "The modulus of rigidity is the ratio of",
+    options: ["Longitudinal stress to longitudinal strain", "Volume stress to volume strain", "Shearing stress to shearing strain", "Tensile stress to tensile strain"],
+    answer: "Shearing stress to shearing strain"
+  },
+  {
+    number: 72,
+    question: "The flux commonly used in brazing is",
+    options: ["Ammonium chloride", "Borax", "Zinc chloride", "Resin plus alcohol"],
+    answer: "Borax"
+  },
+  {
+    number: 73,
+    question: "How many laws of physics are there?",
+    options: ["5", "4", "3", "2"],
+    answer: "4"
+  },
+  {
+    number: 74,
+    question: "Which physicists is the writer of the book 'A Brief History of Time'?",
+    options: ["Isaac Newton", "Hans Bethe", "Albert Einstein", "Stephen Hawking"],
+    answer: "Stephen Hawking"
+  },
+  {
+    number: 75,
+    question: "On which day 'National Science Day' is celebrated in India ?",
+    options: ["February 23", "February 25", "February 26", "February 28"],
+    answer: "February 28"
+  },
+  {
+    number: 76,
+    question: "Matter waves are",
+    options: ["De Broglie waves", "Electromagnetic waves", "Transverse waves", "Longitudinal waves"],
+    answer: "De Broglie waves"
+  },
+  {
+    number: 77,
+    question: "Two waves, each of amplitude 1.5 mm and frequency 10 Hz, are travelling in opposite direction with a speed of 20 mm/s. The distance in mm between adjacent nodes is :",
+    options: ["1.0", "1.2", "1.5", "2.0"],
+    answer: "2.0"
+  },
+  {
+    number: 78,
+    question: "Intensity of any wave is proportional to which of the following?",
+    options: ["Amplitude", "Square of amplitude", "Square root of amplitude", "Cube of amplitude"],
+    answer: "Square of amplitude"
+  },
+  {
+    number: 79,
+    question: "If density of oxygen is 16 times that of hydrogen, what will be their corresponding ratio of velocity of sound?",
+    options: ["4 : 1", "2 : 1", "1 : 16", "1 : 4"],
+    answer: "1 : 4"
+  },
+  {
+    number: 80,
+    question: "Which one of the following statements with regard to Jet stream, an upper level tropospheric wave, is not correct?",
+    options: ["It is narrow band of high-velocity wind.", "It follows the wave path near the tropopause at elevations of 8 km to 15 km.", "Jet streams are typically continuous over long distances.", "In summer, the polar front jet achieves its maximum force."],
+    answer: "In summer, the polar front jet achieves its maximum force."
+  },
+  {
+    number: 81,
+    question: "Which of the following was the first theory of superconductivity?",
+    options: ["Ginzburg Landau theory", "London theory", "Resonating valence bond theory", "Quantum field theory"],
+    answer: "London theory"
+  },
+  {
+    number: 82,
+    question: "A wire of copper having length I and area of cross-section A is taken and a current i is flown through it. The power dissipated in the wire is P. If we take an aluminium wire having same dimensions and pass the same current through it, the power dissipated will be",
+    options: ["P", "< P", "> P", "2P"],
+    answer: "< P"
+  },
+  {
+    number: 83,
+    question: "A wire carrying current is",
+    options: ["Positively charged", "Negatively charged", "Neutral", "Charged with a type depending upon current strength"],
+    answer: "Charged with a type depending upon current strength"
+  },
+  {
+    number: 84,
+    question: "Carbon Arc lamps are commonly used in",
+    options: ["Cinema projectors", "Photography", "Vehicles", "Domestic lighting"],
+    answer: "Photography"
+  },
+  {
+    number: 85,
+    question: "Low voltage cables are meant for use up to",
+    options: ["3.3 kV", "1.1 kV", "11 kV", "0.5 kV"],
+    answer: "1.1 kV"
+  },
+  {
+    number: 86,
+    question: "A car parked in the sun with its windows closed gets terribly hot inside. This is due to",
+    options: ["The heat emitted by the engine", "The greenhouse effect", "The good conducting power of the metal body", "The double layered wind shield"],
+    answer: "The greenhouse effect"
+  },
+  {
+    number: 87,
+    question: "To measure the speed of an approaching car a police officer shines",
+    options: ["Light waves on it", "Microwaves on it", "Radio waves on it", "Ultra high frequency waves on it"],
+    answer: "Radio waves on it"
+  },
+  {
+    number: 88,
+    question: "The device used for measuring the wavelength of X-rays is",
+    options: ["G.M. Counter", "Cyclotron", "Bragg Spectrometer", "Mass Spectrometer"],
+    answer: "Bragg Spectrometer"
+  },
+  {
+    number: 89,
+    question: "If the wavelengths corresponding to ultraviolet, visible and infrared radiations are given as lUV, lVIS and lIR respectively, then which of the following gives the correct relationship among these wavelengths?",
+    options: ["LUV < lIR < lVIS", "LUV > lVIS > lIR", "LUV > lIR > lVIS", "LUV < lVIS < lIR"],
+    answer: "LUV < lVIS < lIR"
+  },
+  {
+    number: 90,
+    question: "Transition ions absorb light in :",
+    options: ["Infrared region", "Ultraviolet region", "Microwave region", "Visible region"],
+    answer: "Visible region"
+  },
+  {
+    number: 91,
+    question: "The least penetrating power ray is",
+    options: ["Gamma rays", "Beta rays", "Alpha rays", "None of the above"],
+    answer: "Alpha rays"
+  },
+  {
+    number: 92,
+    question: "Gamma rays are emissions that have",
+    options: ["Charge but no mass", "Neither mass nor charge", "Both mass and charge", "Mass but no charge"],
+    answer: "Neither mass nor charge"
+  },
+  {
+    number: 93,
+    question: "In the gamma decay of a nucleus",
+    options: ["The mass number of the nucleus changes whereas its atomic number does not change", "The mass number of the nucleus does not change whereas its atomic number changes", "Both the mass number and the atomic number of the nucleus change", "Neither the mass number nor the atomic number of the nucleus changes"],
+    answer: "Neither the mass number nor the atomic number of the nucleus changes"
+  },
+  {
+    number: 94,
+    question: "Who among the following developed the technology of underground nuclear explosion ?",
+    options: ["Dr. Homi J. Bhabha", "Dr. Vikram Sarabhai", "Dr. Raja Ramanna", "Dr. P. K. Iyengar"],
+    answer: "Dr. Raja Ramanna"
+  },
+  {
+    number: 95,
+    question: "A radioactive substance does not undergo any change (in mass or charge) during",
+    options: ["Gamma-emission", "Oxidation", "Alpha-emission", "Beta-emission"],
+    answer: "Gamma-emission"
+  },
+  {
+    number: 96,
+    question: "The distance between node and adjacent antinode is 30 cm. The wavelength is",
+    options: ["30 cm.", "90 cm.", "120 cm.", "60 cm."],
+    answer: "60 cm."
+  },
+  {
+    number: 97,
+    question: "The material used in the fabrication of a transistor is",
+    options: ["Aluminium", "Copper", "Silicon", "Silver"],
+    answer: "Silicon"
+  },
+  {
+    number: 98,
+    question: "For which Diode is used ?",
+    options: ["Modulation", "Oscillation", "Amplification", "Purification"],
+    answer: "Amplification"
+  },
+  {
+    number: 99,
+    question: "The complete form of 'IC' in electronics is",
+    options: ["Internal circuit", "Independent circuit", "Integrated circuit", "Inbuilt circuit"],
+    answer: "Integrated circuit"
+  },
+  {
+    number: 100,
+    question: "In electronics what comes under tank circuit ?",
+    options: ["Resistance and capacity", "Resistance and inductance", "Capacity and inductance", "Resistance, capacity and inductance"],
+    answer: "Resistance, capacity and inductance"
+  }
+  ],
+  sta122: [
+  {
+    number: 1,
+    question: "The cumulative function of a random discrete variable V is often written as",
+    options: ["F(x)", "f(x)", "F`(x)", "f`(X)", "d(x)"],
+    answer: "F(x)"
+  },
+  {
+    number: 2,
+    question: "Ten percent of the tools produced in a certain manufacturing process turns out to be defective. Find the probability that in a sample of 100 tools at random, exactly two will be defective",
+    options: ["0.0023", "0.23", "0.023", "23", "0.00023"],
+    answer: "0.0023"
+  },
+  {
+    number: 3,
+    question: "Which of the following distributions has the variance of the number of occurrences equal to the mean number of occurrences?",
+    options: ["Bernoulli Distribution", "Normal Distribution", "Poisson Distribution", "Geometric Distribution"],
+    answer: "Poisson Distribution"
+  },
+  {
+    number: 4,
+    question: "The probability density function of a random discrete variable X is often written as",
+    options: ["F(x)", "f(x)", "F`(x)", "f`(x)", "d(x)"],
+    answer: "f(x)"
+  },
+  {
+    number: 5,
+    question: "Suppose that 4% of items manufactured by a certain factory are defective. Find the probability that in a sample of 100 items selected random, there would be two defectives.",
+    options: ["0.9082", "0.9084", "0.9261", "0.8761", "0.3451"],
+    answer: "0.9082"
+  },
+  {
+    number: 6,
+    question: "If a worn machine tools produce 1% defective parts and the parts produced are independent. Find the mean number of the defective parts out of 25",
+    options: ["0.01", "0.252", "0.05", "0.50", "0.25"],
+    answer: "0.25"
+  },
+  {
+    number: 7,
+    question: "Supposed that 4% of the items manufactured by certain factory are defective. Determine the probability that in a sample of 100 items at random. There would be at least 4 defectives",
+    options: ["0.1934", "0.1944", "0.1945", "0.1945", "0.5705"],
+    answer: "0.1945"
+  },
+  {
+    number: 8,
+    question: "260 bolts are examined as they are produced and 5 of them are found to be defective. Find the probability of a bolt selected is not defective",
+    options: ["1", "0.921", "0.234", "0.12", "0.981"],
+    answer: "0.981"
+  },
+  {
+    number: 9,
+    question: "On the basis of pass experience, the probability that a certain electrical component will be satisfactory is 0.98. The components are sampled item by item from continuous production. In a sample of five components. What is the probability of finding exactly two defective?",
+    options: ["0.0038", "0.00038", "0.32", "0.032", "0.3222"],
+    answer: "0.0038"
+  },
+  {
+    number: 10,
+    question: "The probability that a thirty – year –old man will survive a fixed length of time is 0.995. An insurance company sells him a N20,000.00 life insurance policy for this length of time for a premium of N200.00. What is the expected gain for the insurance company?",
+    options: ["N700.00", "N300.00", "N500.00", "N100.00", "50.00"],
+    answer: "N100.00"
+  },
+  {
+    number: 11,
+    question: "Find the value of z such that P(Z>z)=0.05",
+    options: ["1.65", "1.96", "2.65", "2.453", "0"],
+    answer: "1.65"
+  },
+  {
+    number: 12,
+    question: "A machine produces 22 items during a shift. Three of the 22 items are defective and the rest are non-defective. In how many different order can the 22 items be arranged if all the defective items are considered identical and all the non-defective items are identical of a different class?",
+    options: ["1530", "2171", "1540", "1276", "2109"],
+    answer: "1540"
+  },
+  {
+    number: 13,
+    question: "What does a probability of 0 indicate?",
+    options: ["The event will occur with certainty", "The event will not occur", "The event may or may not occur", "The event has an equal chance of occurring or not occurring"],
+    answer: "The event will not occur"
+  },
+  {
+    number: 14,
+    question: "What does a probability of 1 indicate?",
+    options: ["The event will not occur", "The event will occur with certainty", "The event may or may not occur", "The event has a 50% chance of occurring"],
+    answer: "The event will occur with certainty"
+  },
+  {
+    number: 15,
+    question: "In mathematical terms, probability is defined as:",
+    options: ["The ratio of the number of favorable outcomes to the total number of possible outcomes", "The ratio of the number of unfavorable outcomes to the total number of possible outcomes", "The total number of possible outcomes divided by the number of favorable outcomes", "The sum of all possible outcomes"],
+    answer: "The ratio of the number of favorable outcomes to the total number of possible outcomes"
+  },
+  {
+    number: 16,
+    question: "Why is probability essential in statistics?",
+    options: ["It measures the exact outcome of random events", "It provides a framework for making predictions and informed decisions", "It eliminates all uncertainty in statistical analysis", "It guarantees the accuracy of statistical data"],
+    answer: "It provides a framework for making predictions and informed decisions"
+  },
+  {
+    number: 17,
+    question: "The probability of an event occurring is expressed as a number between:",
+    options: ["-1 and 1", "0 and 100", "0 and 1", "0 and infinity"],
+    answer: "0 and 1"
+  },
+  {
+    number: 18,
+    question: "What are the three main concepts of probability?",
+    options: ["Subjective, Empirical, Theoretical", "Classical, Relative Frequency, Axiomatic", "Bayesian, Frequentist, Axiomatic", "Empirical, Subjective, Theoretical"],
+    answer: "Classical, Relative Frequency, Axiomatic"
+  },
+  {
+    number: 19,
+    question: "Which probability concept is based on equally likely outcomes?",
+    options: ["Axiomatic", "Relative Frequency", "Classical or Equally Likelihood", "Subjective"],
+    answer: "Classical or Equally Likelihood"
+  },
+  {
+    number: 20,
+    question: "In the Classical concept of probability, how is the probability of an event calculated?",
+    options: ["By counting the number of favorable outcomes only", "By dividing the number of favorable outcomes by the total number of possible outcomes", "By averaging past occurrences", "By subjective judgment"],
+    answer: "By dividing the number of favorable outcomes by the total number of possible outcomes"
+  },
+  ],
+  gst101: [
+  {
+    number: 1,
+    question: "The true origin of the Yoruba people is regarded as:",
+    options: ["Clearly known", "Ancient legend", "Controversial", "A recent discovery"],
+    answer: "Controversial"
+  },
+
+  {
+    number: 2,
+    question: "Who wrote History of the Yoruba?",
+    options: ["Herbert Macaulay", "Rev. Samuel Johnson", "Chief Obafemi Awolowo"],
+    answer: "Rev. Samuel Johnson"
+  },
+  {
+    number: 3,
+    question: "According to Rev. Johnson, the Yoruba came from the:",
+    options: ["South-West", "East ", "West", "South"],
+    answer: "East"
+  },
+  {
+    number: 4,
+    question: "The East mentioned by Johnson refers to:",
+    options: ["Mecca", "Jerusalem", "Sudan", "Kenya"],
+    answer: "Mecca"
+  },
+  {
+    number: 5,
+    question: "Johnson traced the Yoruba’s origin to which African region?",
+    options: ["North-Eastern Africa", "Southern Africa", "Central Africa", "North-West Africa"],
+    answer: "North-Eastern Africa"
+  },
+  {
+    number: 6,
+    question: "According to Johnson, where did the Yoruba finally settle?",
+    options: ["Ibadan", "Benin", "Ile-Ife", "Oyo"],
+    answer: "Ile-Ife"
+  },
+  {
+    number: 7,
+    question: "Who led the Yoruba to Ile-Ife?",
+    options: ["Obatala", "Oduduwa", "Oranmiyan"],
+    answer: "Oduduwa"
+  },
+  {
+    number: 8,
+    question: "Oduduwa is believed to have sent his sons and grandsons to:",
+    options: ["Conquer Benin", "Found other Yoruba kingdoms", "Fight against Dahomey", "Spread Islam"],
+    answer: "Found other Yoruba kingdoms"
+  },
+  {
+    number: 9,
+    question: "Johnson associated Yoruba culture with which ancient civilization?",
+    options: ["Nubian", "Egyptian", "Ethiopian", "Ghanaian"],
+    answer: "Egyptian"
+  },
+  {
+    number: 10,
+    question: "According to Johnson, “the East is Mecca” means that:",
+    options: ["Yoruba people love the sun", "Yoruba see the East as holy", "Yoruba dislike Egypt", "Yoruba worship rivers"],
+    answer: "Yoruba see the East as holy"
+  },
+  {
+    number: 11,
+    question: "Oke Oramfe is located in:",
+    options: ["Ibadan", "Ile-Ife", "Oyo", "Abeokuta"],
+    answer: "Ile-Ife"
+  },
+  {
+    number: 12,
+    question: "Oke Oramfe is believed to be:",
+    options: ["The origin of Oyo Empire", "The burial place of Oduduwa", "The centre from which the world was created", "The capital of Egypt"],
+    answer: "The centre from which the world was created"
+  },
+  {
+    number: 13,
+    question: "Who wrote Yorubaland up to 1800?",
+    options: ["Samuel Johnson", "Akinjogbin & Ayandele", "Herbert Macaulay", "Wole Soyinka"],
+    answer: "Akinjogbin & Ayandele"
+  },
+  {
+    number: 14,
+    question: "Before creation, the world was covered by:",
+    options: ["Fire", "Wind", "Water", "Sand"],
+    answer: "Water"
+  },
+  {
+    number: 15,
+    question: "The leader of God’s messengers in the Oke Oramfe version was:",
+    options: ["Oduduwa", "Obatala", "Oranmiyan", "Bashorun"],
+    answer: "Obatala"
+  },
+  {
+    number: 16,
+    question: "How many immortals followed Obatala?",
+    options: ["Twelve", "Sixteen", "Seven", "Ten"],
+    answer: "Sixteen"
+  },
+  {
+    number: 17,
+    question: "What items were given to Obatala and the immortals?",
+    options: ["A drum and sword", "Five pieces of iron, lump of earth, and a cockerel", "A staff and bell", "Palm wine and beads"],
+    answer: "Five pieces of iron, lump of earth, and a cockerel"
+  },
+  {
+    number: 18,
+    question: "What caused Obatala to lose leadership?",
+    options: ["Illness", "Laziness", "Drunkenness", "Betrayal"],
+    answer: "Drunkenness"
+  },
+  {
+    number: 19,
+    question: "Who took over leadership from Obatala?",
+    options: ["Oranmiyan", "Oduduwa", "Bashorun", "Ogun"],
+    answer: "Oduduwa"
+  },
+  {
+    number: 20,
+    question: "What happened when the cockerel spread its toes?",
+    options: ["The world was formed", "The sky darkened", "Oduduwa became angry", "Obatala was punished"],
+    answer: "The world was formed"
+  },
+  {
+    number: 21,
+    question: "What became Oduduwa’s role after forming the earth?",
+    options: ["King of Oyo", "Ruler of the world", "Chief priest", "Warrior"],
+    answer: "Ruler of the world"
+  },
+  {
+    number: 22,
+    question: "What did Oduduwa do from his base in Ife?",
+    options: ["Sent people to Egypt", "Extended his authority to other Yoruba towns", "Invaded Dahomey", "Founded the Benin Empire"],
+    answer: "Extended his authority to other Yoruba towns"
+  },
+  {
+    number: 23,
+    question: "According to Yoruba belief, Oduduwa is the:",
+    options: ["Father of Obatala", "Ancestral father of the Yoruba", "First Alaafin", "God of thunder"],
+    answer: "Ancestral father of the Yoruba"
+  },
+  {
+    number: 24,
+    question: "The main difference between Johnson’s and Oke Oramfe’s versions is that:",
+    options: ["Johnson supports creation, Oke Oramfe migration", "Johnson supports migration, Oke Oramfe creation", "Both are from Egypt", "Both are from Benin"],
+    answer: "Johnson supports migration, Oke Oramfe creation"
+  },
+  {
+    number: 25,
+    question: "The cockerel in the Oke Oramfe story symbolizes:",
+    options: ["War", "Fertility", "The spreading of land", "Wealth"],
+    answer: "The spreading of land"
+  },
+  {
+    number: 26,
+    question: "Which Yoruba kingdom developed into an empire?",
+    options: ["Ife", "Oyo", "Ijebu", "Egba"],
+    answer: "Oyo"
+  },
+
+  {
+    number: 27,
+    question: "Who founded Oyo Empire?",
+    options: ["Bashorun", "Oranmiyan", "Obatala", "Ilari"],
+    answer: "Oranmiyan"
+  },
+
+  {
+    number: 28,
+    question: "Oranmiyan also founded the:",
+    options: ["Benin monarchy", "Dahomey Empire", "Ife kingdom", "Nupe state"],
+    answer: "Benin monarchy"
+  },
+
+  {
+    number: 29,
+    question: "When was the Oyo Empire founded?",
+    options: ["14th century", "15th century", "16th century", "13th century"],
+    answer: "15th century"
+  },
+
+  {
+    number: 30,
+    question: "When did Oyo become powerful and prosperous?",
+    options: ["Immediately after founding", "A century later", "Two centuries later", "During colonial rule"],
+    answer: "A century later"
+  },
+  {
+    number: 31,
+    question: "Oyo Empire’s authority extended as far as:",
+    options: ["Benin", "Ghana", "Dahomey", "Sokoto"],
+    answer: "Dahomey"
+  },
+
+  {
+    number: 32,
+    question: "Who was the head of the Oyo Empire?",
+    options: ["Bashorun", "Alaafin", "Are-Ona-Kakanfo"],
+    answer: "Alaafin"
+  },
+  {
+    number: 33,
+    question: "The Alaafin was regarded as:",
+    options: ["Companion of the gods", "Slave of the gods", "Father of all priests", "The Bashorun’s assistant"],
+    answer: "Companion of the gods"
+  },
+
+  {
+    number: 34,
+    question: "The Alaafin was assisted by:",
+    options: ["Only the Oyomesi", "Priests, officials, and eunuchs", "Ogboni cult only", "Foreigners"],
+    answer: "Priests, officials, and eunuchs"
+  },
+
+  {
+    number: 35,
+    question: "Who checked the powers of the Alaafin?",
+    options: ["The Ogboni", "The Ilari", "The Oyomesi", "The Are-Ona-Kakanfo"],
+    answer: "The Oyomesi"
+  },
+
+  {
+    number: 36,
+    question: "How many members made up the Oyomesi?",
+    options: ["Five", "Seven", "Ten", "Twelve"],
+    answer: "Seven"
+  },
+  {
+    number: 37,
+    question: "Who was the head of the Oyomesi?",
+    options: ["Bashorun", "Are-Ona-Kakanfo", "Alaafin", "Ilari"],
+    answer: "Bashorun"
+  },
+
+  {
+    number: 38,
+    question: "What power did the Oyomesi hold over the Alaafin?",
+    options: ["Tax collection", "Removal of the Alaafin", "Controlling the army", "Trade supervision"],
+    answer: "Removal of the Alaafin"
+  },
+
+  {
+    number: 39,
+    question: "What was the punishment for a deposed Alaafin?",
+    options: ["Exile", "Imprisonment", "Tax collection", "Removal of the Alaafin", "Controlling the army", "Trade supervision"],
+    answer: "Removal of the Alaafin"
+  },
+
+  {
+    number: 40,
+    question: "Who selected the next Alaafin?",
+    options: ["Ogboni cult", "Oyomesi", "Ilari"],
+    answer: "Oyomesi"
+  },
+  {
+    number: 41,
+    question: "The Ogboni cult’s major role was to:",
+    options: ["Train soldiers", "Mediators between the Alaafin and Oyomesi", "Elect new kings"],
+    answer: "Mediators between the Alaafin and Oyomesi"
+  },
+
+  {
+    number: 42,
+    question: "Members of the Ogboni cult included:",
+    options: ["Slaves", "Women only", "Prominent and free citizens", "Foreigners"],
+    answer: "Prominent and free citizens"
+  },
+
+  {
+    number: 43,
+    question: "The Ogboni cult served as:",
+    options: ["Religious organization", "Counterbalance to Oyomesi’s power", "Army training group", "Alaafin’s guards"],
+    answer: "Counterbalance to Oyomesi’s power"
+  },
+
+  {
+    number: 44,
+    question: "Who headed the Oyo army?",
+    options: ["Bashorun", "Are-Ona-Kakanfo", "Alaafin", "Ilari"],
+    answer: "Are-Ona-Kakanfo"
+  },
+
+  {
+    number: 45,
+    question: "The Are-Ona-Kakanfo was expected to live:",
+    options: ["In the palace", "Outside the capital", "Inside the shrine", "At Oke Oramfe"],
+    answer: "Outside the capital"
+  },
+
+  {
+    number: 46,
+    question: "The Oyo army consisted of:",
+    options: ["Hunters only", "Infantry and cavalry", "Priests and slaves", "Farmers"],
+    answer: "Infantry and cavalry"
+  },
+
+  {
+    number: 47,
+    question: "Which of the following was NOT a function of the Oyo army?",
+    options: ["Expansion of the empire", "Stability of the empire", "Suppressing rebellions", "Tax collection"],
+    answer: "Tax collection"
+  },
+
+  {
+    number: 48,
+    question: "Provincial governments in Oyo were headed by:",
+    options: ["Bashorun", "Princes, minor kings, and Baales", "Ogboni priests", "Merchants"],
+    answer: "Princes, minor kings, and Baales"
+  },
+
+  {
+    number: 49,
+    question: "Who acted as the Alaafin’s personal agents in the provinces?",
+    options: ["Ilari", "Oyomesi", "Baale", "Are-Ona-Kakanfo"],
+    answer: "Ilari"
+  },
+
+  {
+    number: 50,
+    question: "During which festival did provincial governors renew allegiance to the Alaafin?",
+    options: ["Odun Egungun", "Bere Festival", "Olojo Festival", "Oro Festival"],
+    answer: "Bere Festival"
+  },
+  {
+    number: 51,
+    question: "The Bini Kingdom was the first in West Africa to exchange ambassadors with a European power between:",
+    options: ["1450–1470", "1481–1504 ✅", "1600–1650", "1550–1580"],
+    answer: "1481–1504"
+  },
+
+  {
+    number: 52,
+    question: "The Bini Kingdom exchanged ambassadors with which region?",
+    options: ["The East African coast", "The Middle East", "A major European power", "The North African states"]
+  },
+  {
+    number: 53,
+    question: "According to Hodgkin (1975), when did he visit Benin?",
+    options: ["1481", "1604", "1750", "1500"]
+  },
+  {
+    number: 54,
+    question: "Hodgkin described Benin as:",
+    options: ["A small town", "A disorganized community", "A great and broad city", "A poor village"]
+  },
+  {
+    number: 55,
+    question: "Who was the head of the Bini Kingdom?",
+    options: ["The Oni", "The Alaafin", "The Oba", "The Bashorun"]
+  },
+  {
+    number: 56,
+    question: "In Bini tradition, succession to the throne was by:",
+    options: ["Election", "Primogeniture", "Selection by priests"]
+  },
+  {
+    number: 57,
+    question: "Primogeniture means:",
+    options: ["The first son inherits the throne", "The most educated becomes king"]
+  },
+  {
+    number: 58,
+    question: "The Oba of Benin was both:",
+    options: ["Civil and religious head", "Military and trade head", "Religious and judicial head", "Spiritual and foreign head"]
+  },
+
+  {
+    number: 59,
+    question: "Hodgkin described the Oba as:",
+    options: ["A mortal ruler", "A warrior chief", "A divine person", "A colonial administrator"]
+  },
+  {
+    number: 60,
+    question: "The Bini society was divided into:",
+    options: ["Three classes", "Two distinct classes", "Four castes", "Many ethnic groups"]
+  },
+
+  {
+    number: 61,
+    question: "The two classes in Bini society were:",
+    options: ["Slaves and nobles", "Commoners and elders", "Nobility (Adesotu) and commoners (Ighiotu)"]
+  },
+  {
+    number: 62,
+    question: "The nobility of Bini society consisted of how many title groups?",
+    options: ["Two", "Three", "Four", "Five"]
+  },
+
+  {
+    number: 63,
+    question: "Which of the following was NOT a group among the Bini nobility?",
+    options: ["The Uzama", "The Eghaevbo n’ Ogbe", "The Eghaevbo n’ Ore", "The Ogboni"]
+  },
+
+  {
+    number: 64,
+    question: "The Uzama were part of:",
+    options: ["The guilds", "The nobility", "The military"]
+  },
+  {
+    number: 65,
+    question: "The Eghaevbo n’ Ogbe were known as:",
+    options: ["Palace chiefs", "Priests","soldiers", "Town chiefs"]
+  },
+  {
+    number: 66,
+    question: "The Eghaevbo n’ Ore were known as:",
+    options: ["Palace chiefs","Traders", "Town chiefs", "Farmers"]
+  },
+  {
+    number: 67,
+    question: "The ordinary people in Bini society were mainly organized into:",
+    options: ["Clans", "Guilds","Age grades", "Religious groups"]
+  },
+  {
+    number: 68,
+    question: "The Bini guilds were groups of:",
+    options: ["Warriors", "Farmers", "Skilled professionals", "Traders"]
+  },
+
+  {
+    number: 69,
+    question: "Examples of guild members included:",
+    options: ["Drummers and dancers", "Carvers, brass-workers, blacksmiths", "Warriors and tax collectors", "Messengers and scribes"]
+  },
+
+  {
+    number: 70,
+    question: "The Bini guilds were important because:",
+    options: ["They organized festivals", "They acted as local administrators", "They trained soldiers", "They collected taxes"]
+  },
+{
+  number: 71,
+  question: "The Igbo people are best known for having what type of society?",
+  options: ["Centralized", "Monarchical", "Acephalous", "Aristocratic"]
+},
+{
+  number: 72,
+  question: "The term acephalous means:",
+  options: ["Government without kings", "Government by priests", "Rule by merchants", "Rule by elders only"]
+},
+{
+  number: 73,
+  question: "The Igbo system of government is also called:",
+  options: ["Monarchy", "Segmented government", "Democratic system", "Feudal system"]
+},
+{
+  number: 74,
+  question: "The Igbo system of government is also called:",
+  options: ["Monarchy", "Segmented government", "Democratic system", "Feudal system"]
+},
+{
+  number: 75,
+  question: "How many sub-cultures exist in Igbo society?",
+  options: ["Three", "Four", "Five", "Six"]
+},
+{
+  number: 76,
+  question: "The Igbo sub-cultures include all except:",
+  options: ["Eastern Igbo", "South-Eastern Igbo", "Northern Igbo", "South-Western Igbo  "]
+},
+{
+  number: 77,
+  question: "The Igbo are predominantly:",
+  options: ["Soldiers and priests", "Farmers and traders", "Hunters and fishermen", "Craftsmen and sailors"]
+},
+{
+  number: 78,
+  question: "Igbo language is characterized by:",
+  options: ["Mutual intelligibility of dialects", "Completely different languages", "Latin alphabets", "Arabic origin"]
+},
+{
+  number: 79,
+  question: "The political system of the Igbo is based on:",
+  options: ["Centralized authority", "Decentralization of power", "Divine kingship", "Military leadership"]
+},
+{
+  number: 80,
+  question: "The symbol of authority among the Igbo is:",
+  options: ["Staff of office", "Sword of Ogun", "The Ofo", "The royal crown"]
+},
+{
+  number: 81,
+  question: "According to Professor Onwuejeogwu, who was the ancestor of the Igbo?",
+  options: ["Oduduwa", "Obatala", "Eri", "Oranmiyan"]
+},
+{
+    number: 82,
+    question: "The king is chosen by the gods",
+    options: ["True", "False"]
+  },
+
+  {
+    number: 83,
+    question: "Igbo language is characterized by:",
+    options: ["Mutual intelligibility of dialects", "Completely different languages", "Latin alphabets", "Arabic origin"]
+},
+{  number: 84,
+  question: "The political system of the Igbo is based on:",
+  options: ["Centralized authority", "Decentralization of power", "Divine kingship", "Military leadership"]
+},
+{  number: 85,
+  question: "The symbol of authority among the Igbo is:",
+  options: ["Staff of office", "Sword of Ogun", "The Ofo", "The royal crown"]
+},
+{  number: 86,
+  question: "The political system of the Igbo is based on:",
+  options: ["Centralized authority", "Decentralization of power", "Divine kingship", "Military leadership"]
+},
+{  number: 87,
+  question: "The symbol of authority among the Igbo is:",
+  options: ["Staff of office", "Sword of Ogun", "The Ofo", "The royal crown"]
+}
+  ],
+    gst103: [
+    {
+      number: 1,
+      question: "The following are in the group of.. Hoes, cutlasses, handicrafts, motor vehicle",
+      options: ["Culture", "Artifacts", "Materials", "Values", "Customs"],
+      answer: "Artifacts"
+    },
+    {
+        number: 2,
+      question: "The study of human culture is called",
+      options: ["Sociology", "Psychology", "Anthropology", "History", "Archaeology"],
+      answer: "Anthropology"
+    },
+    {
+      number: 3,    
+      question: "The common characteristic of Nok terracotta is..",
+      options: [
+        "Treatment of the teeth",
+        "Treatment of the mouth",
+        "The treatment of the eye"
+      ],
+        answer: "The treatment of the eye"
+    },
+    {
+
+        number: 4,  
+      question: "----------------------is the exchange of cultural features or trait",
+      options: [
+         "Culturation",  "value",  "Acculturation","Norms"
+      ],
+      answer: "Acculturation"
+    },
+    {
+      number: 5,
+      question: "The method which the Nok sculpture was produced is",
+      options: [ "Surmising", "Casting", "Modeling", "Carving", "Sculpting"],
+      answer: "Modeling"
+    },
+    {
+      number: 6,
+      question: "The Nok culture is found in what part of Nigeria",
+      options: ["North", "South", "East", "West"],
+      answer: "North"
+    }, 
+    {
+      number: 7,
+      question: "The concepts of culture are grouped into",
+      options: [ "One", "Two", "Three", "Four", "Five"],
+      answer: "Two",
+    },
+    {
+      number: 8,
+      question: "When culture is said to be found everywhere implies that culture is",
+      answer: "Universal",
+      options: ["Universal","Learned","Dynamic","Stable"],
+      answer: "Universal"
+    },
+    {
+        number: 9,
+      question: "Igbo Ukwu arts was found in the.",
+      options: [ "8TH century", "9TH century", "10TH century", "4TH century"],
+      answer: "9TH century",
+    },
+    {
+      number: 10,
+      question: "Rock painting can be found in part of Nigeria",
+      options: [ "Northern", "Southern", "Eastern", "Western", "None of the above"],
+      answer: "Northern"
+    },
+    {
+      number: 11,
+      question: "Culture facilitates the gratification of basic human needs such as.",
+      options: ["Food, Shelter, Water, Procreation", "Customs", "Values", "Norms"],
+      answer: "Food, shelter, water and procreation"
+    },
+    {
+      number: 12,
+      question: "Igbo-Ukwu is in what state in Nigeria",
+      options: ["Enugu", "Anambra", "Ebonyi", "Edo", "Divers"],
+      answer: "Anambra"
+    },
+    {
+      number: 13,
+      question: "Were can we find portraits in bronze as well as terracotta",
+      answer: "Ife",
+      options: ["Edo", "Brass", "Ife", "Benin", "Kano", "Nok"]
+    },
+    {
+      number: 14, 
+      question: "Culture in anthropological parlance refers to traditional modes of..",
+      options: ["Behavior", "Culturazation", "Customs", "Values", "Norms"],
+      answer: "Behavior",
+    },
+    {
+      number: 15,
+      question: "Culture is--------------through the process of socialization or enculturation.",
+      options: ["Learned", "Universal", "Dynamic", "Stable", "Static"],
+      answer: "Learned",
+    },
+    {
+      number: 16,
+      question: "----------------is a process whereby a Child learn of its first culture",
+      options: ["Acculturation", "Culture", "Culturation", "Enculture"],
+        answer: "Enculturation",
+    },
+    {
+      number: 17,
+      question: "Mining in the Nok community was first found in..",
+      options: ["1904", "1840", "1804", "1850", "1860"],
+      answer: "1904",
+    },
+    {
+      number: 18,
+      question: "Nigerian arts is usually categorized into.",
+      options: ["Four", "Three", "Five", "Six"],
+      answer: "Three",
+    },
+    {
+      number: 19,
+      question: "Culture is said to be when the culture of a people is modified through time",
+      options: ["Static", "Learned", "Dynamic", "Stable", "Universal"],
+      answer: "Dynamic",
+    },
+    {
+      number: 20,
+      question: "Another notable feature of the Nok people is.",
+      options: ["Human head", "Teeth", "Eye", "Eyebrow", "Head", "Iron working"],
+      answer: "Iron working"
+    },
+    {
+      number: 21,
+      question: "Culture is an instrument of.",
+      options: ["Adaptation", "Adaptment", "Adopt", "Adapt"],
+      answer: "Adaptation",
+    },
+    {
+      number: 22,
+      question: "Ile-Ife is located in what part of Nigeria",
+      option: ["Ogun", "Ondo", "Osun", "Ekiti", "Kwara", "Oyo", "Lagos"],
+      answer: "Osun"
+    },
+    {
+      number: 23,
+      question: "The Nok culture is dated to be about",
+      options: ["1500 BC", "500 BC", "1000 BC", "2000 BC"],
+      answer: "500 BC",
+    },
+    {
+      number: 24,
+      question: "------------------Is a process by which new traits are added",
+      options: ["Culturation", "Acculturation", "Enculturation", "Culture"],
+      answer: "Culturation"
+    },
+    {
+      number: 25,
+      question: "-------------------saw human development in terms of great technological revolutions which shape destiny of man",
+      options: ["Cultural accumulation", "Cultural evolution", "Enculture", "Value"],
+      answer: "Cultural evolution"
+    },
+    {
+      number: 26,
+      question: "The following are the views of-----------------that culture is a complex whole which includes knowledge, belief, art, morals, law, custom and any other capabilities and habits acquired",
+      options: ["Edward B. Tylor", "White Taylor", "Spencer Taylor", "Moore Greece", "Gordon childe", "Gordon Hilda Taba"],
+      answer: "Edward B. Tylor"
+    },  
+    {
+      number: 27,
+      question: "When did the Ife art come to limelight?",
+      options: ["1901", "1910", "1810", "1801"],
+      answer: "1910"
+    },  
+    {
+      number: 28,
+      question: "Nok culture can be found in what part of Nigeria",
+      options: ["Jos Plateau", "Kano", "Kaduna", "Bauchi", "Zaria", "Katsina", "Sokoto", "Borno", "Yobe", "Gombe", "Nassarawa", "Taraba"],
+      answer: "Jos Plateau"
+    },
+    {
+      number: 29,
+      question: "----------------and----------------------were of the views that culture holds the key to the way in which man and society develop.",
+      options: ["Hilda and Taba", "Spencer and Taylor", "Moore Greece", "White and Taylor"],
+      answer: "Spencer and Taylor"
+    },
+    {
+      question: "------------------is the oldest iron working civilization in West Africa", 
+      options: ["Yoruba", "Hausa","Nok", "Igbo"],
+      answer: "Nok"
+    },
+  ],
+  sta122: [
+  {
+    number: 1,
+    question: "Which probability concept is typically based on past data and observed frequencies?",
+    options: ["Classical", "Axiomatic", "Relative Frequency", "Theoretical"],
+    answer: "Relative Frequency"
+  },
+  {
+    number: 2,
+    question: "What does the Axiomatic concept of probability rely on?",
+    options: ["Basic assumptions and rules that are universally accepted", "Counting all possible outcomes", "Prior observations and experiments", "Personal judgment"],
+    answer: "Basic assumptions and rules that are universally accepted"
+  },
+  {
+    number: 3,
+    question: "Which field is probability NOT commonly applied in?",
+    options: ["Finance", "Medicine", "Astrology", "Engineering"],
+    answer: "Astrology"
+  },
+  {
+    number: 4,
+    question: "In decision-making processes, what is one of the main roles of probability?",
+    options: ["Estimating the certainty of an event", "Establishing absolute truths", "Eliminating all risks", "Confirming personal beliefs"],
+    answer: "Estimating the certainty of an event"
+  },
+  {
+    number: 5,
+    question: "Which of the following is a practical application of probability?",
+    options: ["Assessing the effectiveness of a new drug", "Predicting daily weather with perfect accuracy", "Determining the outcome of a coin toss with no uncertainty", "Providing a definitive answer to a philosophical question"],
+    answer: "Assessing the effectiveness of a new drug"
+  },
+  {
+    number: 6,
+    question: "How does probability assist in risk management in insurance?",
+    options: ["By determining a fair price for policies based on risk", "By removing all risks from a policy", "By guaranteeing profits regardless of circumstances", "By eliminating the need for data analysis"],
+    answer: "By determining a fair price for policies based on risk"
+  },
+  {
+    number: 7,
+    question: "In which of the following cases would probability be least useful?",
+    options: ["Predicting election outcomes", "Assessing survey opinions", "Forecasting the stock market trends", "Finding the exact number of stars in the galaxy"],
+    answer: "Finding the exact number of stars in the galaxy"
+  },
+  {
+    number: 8,
+    question: "A probability function is given by p(0) = 0.3164, p(1) = 0.4219, p(2) = 0.2109, p(3) = 0.0469 and p(4) = 0.0039. Find its mean and variance.",
+    options: ["1.00 and 0.34", "1.00 and 0.70", "1.00 and 0.85", "1.00 and 0.75", "1.00 and 0.89"],
+    answer: "1.00 and 0.34"
+  },
+  {
+    number: 9,
+    question: "There are two kinds of random variables",
+    options: ["discrete and digital random variables", "discrete and continuous random variables", "normal and lognormal random variables", "discrete and Poisson random variables", "discrete and Binomial random variables"],
+    answer: "discrete and continuous random variables"
+  },
+  {
+    number: 10,
+    question: "A random variable that can only take on specific or integer value in its domain is called",
+    options: ["parato random variable", "Exponential random variable", "normal random variable", "Continuous random variable", "discrete random variable"],
+    answer: "discrete random variable"
+  },
+  {
+    number: 11,
+    question: "A random variable that can take any value in its domain is called",
+    options: ["binomial distribution", "Bernoulli distribution", "continuous random variable", "poison", "geometric"],
+    answer: "continuous random variable"
+  },
+  {
+    number: 12,
+    question: "The parameters of binomial distribution are",
+    options: ["n and p", "n, c, and p", "a, b , c and p", "p and q", "all of the above"],
+    answer: "n and p"
+  },
+  {
+    number: 13,
+    question: "The variance of Bernoulli distribution is",
+    options: ["npq", "pq", "p/q", "np/q", "np/pq"],
+    answer: "pq"
+  },
+  {
+    number: 14,
+    question: "For a binomial distribution with parameter n=5 and p= 0.3, find the probability of exactly 3 successes",
+    options: ["0.005", "0.0032", "0.13423", "0.323", "0.542"],
+    answer: "0.13423"
+  },
+  {
+    number: 15,
+    question: "Ten percent of the tools produced in a certain manufacturing process turns out to be defective. Find the probability that in a sample of 100 tools chosen at random, exactly two will be defective.",
+    options: ["0.0023", "0.23", "0.023", "23", "0.00023"],
+    answer: "0.0023"
+  },
+  {
+    number: 16,
+    question: "A probability function is given by p(0) = 0.3164, p(1) = 0.4219, p(2) = 0.2109, p(3) = 0.0469 and p(4) = 0.0039. Find its mean and variance.",
+    options: ["1.00 and 0.34", "1.00 and 0.70", "1.00 and 0.85", "1.00 and 0.75", "1.00 and 0.89"],
+    answer: "1.00 and 0.34"
+  },
+  {
+    number: 17,
+    question: "There are two kinds of random variables",
+    options: ["discrete and digital random variables", "discrete and continuous random variables", "normal and lognormal random variables", "discrete and Poisson random variables", "discrete and Binomial random variables"],
+    answer: "discrete and continuous random variables"
+  },
+  {
+    number: 18,
+    question: "For a binomial distribution with parameter n=5 and p= 0.3, find the probability of exactly 3 successes",
+    options: ["0.005", "0.3087", "0.13423", "0.1323", "0.542"],
+    answer: "0.3087"
+  },
+  {
+    number: 19,
+    question: "Ten percent of the tools produced in a certain manufacturing process turns out to be defective. Find the probability that in a sample of 100 tools chosen at random, exactly two will be defective.",
+    options: ["0.0023", "0.23", "0.023", "23", "0.00023"],
+    answer: "0.0023"
+  },
+  {
+    number: 20,
+    question: "Suppose that 4% of the items manufactured by a certain factory are defective. Find the probability that in a sample of 100 items selected at random, there would be at least two defectives.",
+    options: ["0.9082", "0.9084", "0.9261", "0.8761", "0.3451"],
+    answer: "0.9082"
+  },
+  {
+    number: 21,
+    question: "If a worn machine tools produces 1% defective parts and the parts produced are independent, find the mean number of defective parts out of 25.",
+    options: ["0.01", "0.252", "0.05", "0.50", "0.25"],
+    answer: "0.25"
+  },
+  {
+    number: 22,
+    question: "260 bolts are examined as they are produced and 5 of them are found to be defective. Find the probability a bolt selected is not defective.",
+    options: ["1", "0.921", "0.234", "0.12", "0.981"],
+    answer: "0.981"
+  },
+  {
+    number: 23,
+    question: "On the basis of past experience, the probability that a certain electrical component will be satisfactory is 0.98. The components are sampled item by item from continuous production. In a sample of five components, what is the probability of finding exactly two defectives?",
+    options: ["0.0038", "0.00038", "0.32", "0.032", "0.3222"],
+    answer: "0.0038"
+  },
+  {
+    number: 24,
+    question: "A probability function is given by p(0) = 0.3164, p(1) = 0.4219, p(2) = 0.2109, p(3) = 0.0469 and p(4) = 0.0039. Find its mean and variance.",
+    options: ["1.00 and 0.34", "1.00 and 0.70", "1.00 and 0.85", "1.00 and 0.75", "1.00 and 0.89"],
+    answer: "1.00 and 0.34"
+  },
+  {
+    number: 25,
+    question: "A probability function is given by p(0) = 0.3164, p(1) = 0.4219, p(2) = 0.2109, p(3) = 0.0469 and p(4) = 0.0039. Find its mean and variance.",
+    options: ["1.00 and 0.34", "1.00 and 0.70", "1.00 and 0.85", "1.00 and 0.75", "1.00 and 0.89"],
+    answer: "1.00 and 0.34"
+  }
+],
+};
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Practice All Questions | Scholar’s Circle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f8fb; color: #222; margin: 0; padding: 0; }
+    header { background: #b30000; color: #fff; text-align: center; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    main { max-width: 700px; margin: 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    #auth-container { text-align: center; }
+    input.auth-input { display: block; width: 80%; margin: 10px auto; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    button { background: #b30000; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 15px; width: 85%; }
+    button:hover { background: #900000; }
+    .auth-link { margin-top: 10px; }
+    .tab-bar { margin-bottom: 20px; }
+    .tab-btn { margin: 4px 0; width: 100%; padding: 12px; border-radius: 8px; border: none; background: #eee; color: #222; font-weight: bold; cursor: pointer; }
+    .tab-btn.active { background: #b30000; color: #fff; }
+    #logout-btn { margin-top: 20px; }
+    .question { margin-bottom: 24px; padding: 12px; border-radius: 8px; background: #f9f9f9; }
+    .options { list-style: none; padding: 0; }
+    .option-btn { margin: 4px 0; width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+    .option-btn.selected { border: 2px solid #007bff; }
+    .option-btn.correct { background: #d4edda; }
+    .option-btn.incorrect { background: #f8d7da; }
+    .show-answer { margin-top: 8px; }
+    .answer { margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Practice All Questions</h1>
+    <p><em>100L Scholar’s Circle</em><br>Select your course and practice!</p>
+  </header>
+  <main>
+    <!-- AUTH SECTION -->
+ 
+      <div id="login-form">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username" class="auth-input" />
+        <input type="password" id="login-password" placeholder="Password" class="auth-input" />
+        <button id="login-btn">Login</button>
+        <p class="auth-link">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+      </div>
+      <div id="signup-form" style="display:none;">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-username" placeholder="Username" class="auth-input" />
+        <input type="password" id="signup-password" placeholder="Password" class="auth-input" />
+        <button id="signup-btn">Sign Up</button>
+        <p class="auth-link">Already have an account? <a href="#" id="show-login">Login</a></p>
+      </div>
+      <div id="auth-message"></div>
+    </div>
+    <!-- MAIN CONTENT SECTION (hidden until login) -->
+    <div id="main-content" style="display:none;">
+      <div class="tab-bar">
+        <button class="tab-btn active" data-course="phy101">PHY 101</button>
+        <button class="tab-btn" data-course="phy102">PHY 102</button>
+        <button class="tab-btn" data-course="phy123">PHY 123</button>
+        <button class="tab-btn" data-course="phy124">PHY 124</button>
+        <button class="tab-btn" data-course="cee101">CEE 101</button>
+        <button class="tab-btn" data-course="sta122">STA 122</button>
+        <button class="tab-btn" data-course="gst101">GST 101</button>
+        <button class="tab-btn" data-course="gst102">GST 102</button>
+        <button class="tab-btn" data-course="gst103">GST 103</button>
+      </div>
+      <section id="questions"></section>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </main>
+  <footer>
+    <p>© 2025 Scholar’s Circle | Built for 100L Students only</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
