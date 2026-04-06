@@ -1,65 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Practice All Questions | Scholar’s Circle</title>
+  <title>Practice All Questions | Scholar's Circle</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
   <header>
     <h1>Practice All Questions</h1>
-    <p class="subtitle">100L & 200L — Press Enter to reveal each level</p>
+    <p class="subtitle">Browse by Level → Department → Course</p>
     <button id="darkmode-toggle">🌙 Dark Mode</button>
   </header>
 
-  <!-- instruction overlay / small banner -->
-  <div id="level-instruction" class="instruction">
-    Press Enter to reveal 100L courses
-    <button id="reveal-100" class="inline-btn">Reveal 100L</button>
-  </div>
+  <main class="levels-container">
 
-  <main>
-    <!-- 100L Level (hidden until revealed) -->
-    <section class="level" id="level-100" aria-hidden="true">
-      <h2>100L Courses</h2>
-      <div class="tab-bar" data-level="100">
-        <button class="tab-btn" data-course="phy101">PHY 101</button>
-        <button class="tab-btn" data-course="phy102">PHY 102</button>
-        <button class="tab-btn" data-course="phy123">PHY 123</button>
-        <button class="tab-btn" data-course="phy124">PHY 124</button>
-        <button class="tab-btn" data-course="cee101">CEE 101</button>
-        <button class="tab-btn" data-course="sta122">STA 122</button>
-        <button class="tab-btn" data-course="gst101">GST 101</button>
-        <button class="tab-btn" data-course="gst102">GST 102</button>
-        <button class="tab-btn" data-course="gst103">GST 103</button>
-        <button class="tab-btn" data-course="mat101">MAT 101</button>
-      </div>
+    <!-- 100L -->
+    <section class="level-section">
+      <h2 class="level-title">100L Courses</h2>
+      <div id="grid-100" class="departments-grid"></div>
     </section>
 
-    <!-- 200L Level (hidden until revealed by second Enter) -->
-    <section class="level" id="level-200" aria-hidden="true">
-      <h2>200L Courses</h2>
-      <div class="tab-bar" data-level="200">
-        <button class="tab-btn" data-course="phy201">PHY 201</button>
-        <button class="tab-btn" data-course="phy202">PHY 202</button>
-        <button class="tab-btn" data-course="mat201">MAT 201</button>
-        <button class="tab-btn" data-course="mat202">MAT 202</button>
-        <button class="tab-btn" data-course="cee201">CEE 201</button>
-        <button class="tab-btn" data-course="sta221">STA 221</button>
-        <button class="tab-btn" data-course="gst201">GST 201</button>
-        <button class="tab-btn" data-course="cos201">COS 201</button>
-      </div>
+    <!-- 200L -->
+    <section class="level-section">
+      <h2 class="level-title">200L Courses</h2>
+      <div id="grid-200" class="departments-grid"></div>
     </section>
 
-    <!-- questions area (below levels) -->
-    <section id="questions" aria-live="polite"></section>
+    <!-- 300L -->
+    <section class="level-section">
+      <h2 class="level-title">300L Courses</h2>
+      <div id="grid-300" class="departments-grid"></div>
+    </section>
+
+    <!-- 400L -->
+    <section class="level-section">
+      <h2 class="level-title">400L Courses</h2>
+      <div id="grid-400" class="departments-grid"></div>
+    </section>
+
+    <!-- 500L -->
+    <section class="level-section">
+      <h2 class="level-title">500L Courses</h2>
+      <div id="grid-500" class="departments-grid"></div>
+    </section>
+
   </main>
 
-  <footer>
-    <p>© 2025 Scholar’s Circle | Built for 100L & 200L Students</p>
-  </footer>
+  <!-- Questions -->
+  <section id="questions"></section>
 
   <script src="script.js"></script>
 </body>
+
 </html>
