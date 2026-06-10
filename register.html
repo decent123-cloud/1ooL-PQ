@@ -1,37 +1,484 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Create Account | Scholar's Circle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --bg-light: #f9fafb;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-light);
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.4rem;
+            height: 4px;
+        }
+
+        .strength-bar {
+            flex: 1;
+            background: var(--border-color);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-bar.weak {
+            background: var(--danger-color);
+        }
+
+        .strength-bar.medium {
+            background: var(--warning-color);
+        }
+
+        .strength-bar.strong {
+            background: var(--success-color);
+        }
+
+        .strength-text {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .password-requirements {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+
+        .requirement:last-child {
+            margin-bottom: 0;
+        }
+
+        .requirement-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 0.6rem;
+            text-align: center;
+            line-height: 18px;
+            font-size: 0.8rem;
+            background: var(--border-color);
+            color: var(--text-light);
+        }
+
+        .requirement.met .requirement-icon {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .requirement.met {
+            color: var(--success-color);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-register:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-light);
+        }
+
+        .footer p {
+            font-size: 0.95rem;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h2>Create Account</h2>
+    <div class="container">
+        <div class="header">
+            <h1>Create Account</h1>
+            <p>Join Scholar's Circle and start practicing</p>
+        </div>
 
-    <input type="text" id="username" placeholder="Username"><br><br>
-    <input type="password" id="password" placeholder="Password"><br><br>
-    <button onclick="register()">Register</button>
+        <div id="alert-container"></div>
 
-    <p>Already have account? <a href="login.html">Login</a></p>
+        <form id="register-form" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    placeholder="Choose your username"
+                    required
+                    minlength="3"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Create a strong password"
+                    required
+                    minlength="6"
+                    onkeyup="checkPasswordStrength()"
+                >
+                <div class="password-strength" id="strength-indicator">
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                    <div class="strength-bar"></div>
+                </div>
+                <div class="strength-text" id="strength-text"></div>
+                <div class="password-requirements">
+                    <div class="requirement" id="req-length">
+                        <span class="requirement-icon">✓</span>
+                        At least 6 characters
+                    </div>
+                    <div class="requirement" id="req-number">
+                        <span class="requirement-icon">✓</span>
+                        Contains a number
+                    </div>
+                    <div class="requirement" id="req-special">
+                        <span class="requirement-icon">✓</span>
+                        Contains a special character (!@#$%^&*)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input 
+                    type="password" 
+                    id="confirm-password" 
+                    placeholder="Re-enter your password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn-register" id="register-btn">
+                Create Account
+            </button>
+        </form>
+
+        <div class="footer">
+            <p>Already have an account? <a href="login.html">Login here</a></p>
+        </div>
+    </div>
 
     <script>
-        function register() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+        const form = document.getElementById('register-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const registerBtn = document.getElementById('register-btn');
+        const alertContainer = document.getElementById('alert-container');
 
-            if (!username || !password) {
-                alert("Fill all fields");
+        function showAlert(message, type = 'danger') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
+            
+            if (type === 'success') {
+                setTimeout(() => alertDiv.remove(), 3000);
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = passwordInput.value;
+            const bars = document.querySelectorAll('.strength-bar');
+            const strengthText = document.getElementById('strength-text');
+            const reqLength = document.getElementById('req-length');
+            const reqNumber = document.getElementById('req-number');
+            const reqSpecial = document.getElementById('req-special');
+
+            // Reset all bars
+            bars.forEach(bar => {
+                bar.classList.remove('weak', 'medium', 'strong');
+            });
+
+            // Check requirements
+            const hasLength = password.length >= 6;
+            const hasNumber = /\d/.test(password);
+            const hasSpecial = /[!@#$%^&*]/.test(password);
+
+            // Update requirement indicators
+            reqLength.classList.toggle('met', hasLength);
+            reqNumber.classList.toggle('met', hasNumber);
+            reqSpecial.classList.toggle('met', hasSpecial);
+
+            // Calculate strength
+            let strength = 0;
+            let strengthLabel = '';
+            let strengthClass = '';
+
+            if (password.length > 0) {
+                if (hasLength) strength++;
+                if (hasNumber) strength++;
+                if (hasSpecial) strength++;
+
+                if (strength === 1) {
+                    strengthLabel = 'Weak';
+                    strengthClass = 'weak';
+                    bars[0].classList.add('weak');
+                } else if (strength === 2) {
+                    strengthLabel = 'Medium';
+                    strengthClass = 'medium';
+                    bars[0].classList.add('medium');
+                    bars[1].classList.add('medium');
+                } else if (strength === 3) {
+                    strengthLabel = 'Strong';
+                    strengthClass = 'strong';
+                    bars[0].classList.add('strong');
+                    bars[1].classList.add('strong');
+                    bars[2].classList.add('strong');
+                }
+            }
+
+            strengthText.textContent = strengthLabel;
+            strengthText.style.color = strengthClass === 'weak' ? '#ef4444' : strengthClass === 'medium' ? '#f59e0b' : '#10b981';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // Validation
+            if (!username || username.length < 3) {
+                showAlert('Username must be at least 3 characters long', 'danger');
+                usernameInput.focus();
                 return;
             }
 
-            const user = { username, password };
-            localStorage.setItem("user", JSON.stringify(user));
+            if (!password || password.length < 6) {
+                showAlert('Password must be at least 6 characters long', 'danger');
+                passwordInput.focus();
+                return;
+            }
 
-            alert("Registration successful. Please login.");
-            window.location.href = "login.html";
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'danger');
+                confirmPasswordInput.focus();
+                return;
+            }
+
+            if (!/\d/.test(password) || !/[!@#$%^&*]/.test(password)) {
+                showAlert('Password must contain a number and a special character (!@#$%^&*)', 'danger');
+                passwordInput.focus();
+                return;
+            }
+
+            // Register user
+            const user = { username, password, registeredAt: new Date().toISOString() };
+            localStorage.setItem('user', JSON.stringify(user));
+
+            showAlert('✓ Account created successfully! Redirecting to login...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
         }
+
+        // Real-time validation
+        usernameInput.addEventListener('blur', () => {
+            if (usernameInput.value.trim().length < 3 && usernameInput.value.trim().length > 0) {
+                showAlert('Username must be at least 3 characters', 'danger');
+            }
+        });
+
+        confirmPasswordInput.addEventListener('input', () => {
+            if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.style.borderColor = '#ef4444';
+            } else {
+                confirmPasswordInput.style.borderColor = '#e5e7eb';
+            }
+        });
     </script>
 </body>
 
